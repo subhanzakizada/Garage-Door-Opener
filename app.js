@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 // Root endpoint (testing to see if the server is up and running)
 app.get('/', (req, res) => {
-    res.send('Hello, the server is up and running!');
+    res.send('Hello, the server is up and runninggggasd!');
 });
 
 // Endpoint to handle incoming SMS messages from Twilio
