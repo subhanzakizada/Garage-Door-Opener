@@ -1,11 +1,10 @@
-// Importing the required functions
 const { parseCommand } = require('../garageDoorControl');
 const { getUser } = require('../user');
 
 // Mock getUser function for testing purposes
 const mockUsers = {
-  "1234567": { phone: "1234567", doors: [{ name: "left", status: "open" }, { name: "right", status: "closed" }] },
-  "7654321": { phone: "7654321", doors: [{ name: "main", status: "closed" }] },
+  "1234567": { phone: "1234567", doors: [{ name: "left", number: 1, status: "open" }, { name: "right", number: 2, status: "closed" }] },
+  "7654321": { phone: "7654321", doors: [{ name: "main", number: 1, status: "closed" }] },
 };
 
 const mockGetUser = async (phone) => {
@@ -15,51 +14,99 @@ const mockGetUser = async (phone) => {
 // Override the original getUser function with the mock
 require.cache[require.resolve('../user')].exports.getUser = mockGetUser;
 
-const tests = {
-  'should parse and validate open command': async () => {
+// Basic assertion function for testing
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message || "Assertion failed");
+  }
+}
+
+// Test runner function
+function test(description, fn) {
+  try {
+    fn();
+    console.log(`✔️  ${description}`);
+  } catch (error) {
+    console.error(`❌  ${description}`);
+    console.error(error);
+  }
+}
+
+(async () => {
+  console.log("Running parseCommand function tests...");
+
+  test('should parse and validate open command', async () => {
     const result = await parseCommand('open left', '1234567');
     assert(result.includes('Opening left'), 'Test failed: should parse and validate open command');
-  },
-  'should parse and validate close command': async () => {
+  });
+
+  test('should parse and validate close command', async () => {
     const result = await parseCommand('close right', '1234567');
     assert(result.includes('Closing right'), 'Test failed: should parse and validate close command');
-  },
-  'should parse and validate status command': async () => {
+  });
+
+  test('should parse and validate status command', async () => {
     const result = await parseCommand('status left', '1234567');
     assert(result.includes('Status of left: open'), 'Test failed: should parse and validate status command');
-  },
-  'should handle invalid command format': async () => {
+  });
+
+  test('should handle invalid command format', async () => {
     const result = await parseCommand('open', '1234567');
     assert(result.includes('Invalid command format'), 'Test failed: should handle invalid command format');
-  },
-  'should handle invalid action': async () => {
+  });
+
+  test('should handle invalid action', async () => {
     const result = await parseCommand('start left', '1234567');
     assert(result.includes('Invalid command'), 'Test failed: should handle invalid action');
-  },
-  'should handle non-existent user': async () => {
+  });
+
+  test('should handle non-existent user', async () => {
     const result = await parseCommand('open left', '0000000');
     assert(result.includes('User with phone number 0000000 not found'), 'Test failed: should handle non-existent user');
-  },
-  'should handle non-existent door': async () => {
+  });
+
+  test('should handle non-existent door', async () => {
     const result = await parseCommand('open non-existent', '1234567');
     assert(result.includes('Door \'non-existent\' not found'), 'Test failed: should handle non-existent door');
-  },
-  'should normalize commands (e.g., case insensitive)': async () => {
+  });
+
+  test('should normalize commands (e.g., case insensitive)', async () => {
     const result1 = await parseCommand('Open left', '1234567');
     const result2 = await parseCommand('CLOSE right', '1234567');
     const result3 = await parseCommand('s left', '1234567');
-    assert(result1.includes('Opening left'), 'Test failed: should normalize commands - case insensitive (open)');
-    assert(result2.includes('Closing right'), 'Test failed: should normalize commands - case insensitive (close)');
-    assert(result3.includes('Status of left: open'), 'Test failed: should normalize commands - case insensitive (status)');
-  },
-  'should handle multiple synonyms for commands': async () => {
+    assert(result1.includes('Opening left'), 'Test failed: should normalize commands (e.g., case insensitive)');
+    assert(result2.includes('Closing right'), 'Test failed: should normalize commands (e.g., case insensitive)');
+    assert(result3.includes('Status of left: open'), 'Test failed: should normalize commands (e.g., case insensitive)');
+  });
+
+  test('should handle multiple synonyms for commands', async () => {
     const result1 = await parseCommand('o left', '1234567');
     const result2 = await parseCommand('c right', '1234567');
     const result3 = await parseCommand('s left', '1234567');
-    assert(result1.includes('Opening left'), 'Test failed: should handle synonyms (open)');
-    assert(result2.includes('Closing right'), 'Test failed: should handle synonyms (close)');
-    assert(result3.includes('Status of left: open'), 'Test failed: should handle synonyms (status)');
-  },
-};
+    assert(result1.includes('Opening left'), 'Test failed: should handle multiple synonyms for commands');
+    assert(result2.includes('Closing right'), 'Test failed: should handle multiple synonyms for commands');
+    assert(result3.includes('Status of left: open'), 'Test failed: should handle multiple synonyms for commands');
+  });
 
-module.exports = tests;
+  test('should provide general help', async () => {
+    const result = await parseCommand('', '1234567');
+    assert(result.includes('open: Use this command to open the door'), 'Test failed: should provide general help');
+  });
+
+  test('should provide specific help', async () => {
+    const result = await parseCommand('help open', '1234567');
+    assert(result.includes('Use this command to open the door'), 'Test failed: should provide specific help');
+  });
+
+  test('should provide help for aliases', async () => {
+    const result = await parseCommand('h o', '1234567');
+    assert(result.includes('Use this command to open the door'), 'Test failed: should provide help for aliases');
+  });
+
+  test('should handle non-existent help topic', async () => {
+    const result = await parseCommand('help non-existent', '1234567');
+    assert(result.includes('Help topic not found'), 'Test failed: should handle non-existent help topic');
+  });
+
+  console.log("\nAll tests passed successfully!");
+})();
