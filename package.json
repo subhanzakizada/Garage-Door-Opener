@@ -1,0 +1,19 @@
+{
+  "name": "sms-handler",
+  "version": "1.0.0",
+  "description": "An Express.js app to handle SMS messages from Twilio",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
