@@ -40,15 +40,15 @@ app.post('/sms', (req, res) => {
     console.log(`Country: ${country}`);
     console.log(`ZIP: ${zip}`);
 
-    // Parse the SMS message and get the response
-    const responseMessage = parseCommand(body);
+    // // Parse the SMS message and get the response
+    // const responseMessage = parseCommand(body);
 
-    // Respond to Twilio to acknowledge receipt of the SMS and send the response back to the user
-    res.send(`
-        <Response>
-            <Message>${responseMessage}</Message>
-        </Response>
-    `);
+    // // Respond to Twilio to acknowledge receipt of the SMS and send the response back to the user
+    // res.send(`
+    //     <Response>
+    //         <Message>${responseMessage}</Message>
+    //     </Response>
+    // `);
 });
 
 app.listen(port, () => {
