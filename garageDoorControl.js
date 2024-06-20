@@ -1,17 +1,17 @@
 const { getUser } = require('./user');
 
 // Action handlers
-const open = (door) => {
+const open = async (door) => {
   door.status = 'open';
   return `Opening ${door.name}...`;
 };
 
-const close = (door) => {
+const close = async (door) => {
   door.status = 'closed';
   return `Closing ${door.name}...`;
 };
 
-const status = (door) => {
+const status = async (door) => {
   return `Status of ${door.name}: ${door.status}`;
 };
 

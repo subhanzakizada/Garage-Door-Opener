@@ -93,9 +93,20 @@ function test(description, fn) {
     assert(result.includes('open: Use this command to open the door'), 'Test failed: should provide general help');
   });
 
+  test('should handle help on help topic', async () => {
+    const result = await parseCommand('help help', '1234567');
+    assert(result.includes('Help topic not found'), 'Test failed: should handle help on help topic');
+  });
+
   test('should provide specific help', async () => {
     const result = await parseCommand('help open', '1234567');
     assert(result.includes('Use this command to open the door'), 'Test failed: should provide specific help');
+  });
+
+  test('should provide specific help using an alias', async () => {
+    const result = await parseCommand('help opne', '1234567');
+    console.log(result);
+    assert(result.includes('Use this command to open the door'), 'Test failed: should provide specific help with an alias');
   });
 
   test('should provide help for aliases', async () => {
