@@ -88,14 +88,24 @@ function test(description, fn) {
     assert(result3.includes('Status of left: open'), 'Test failed: should handle multiple synonyms for commands');
   });
 
-  test('should provide general help', async () => {
+  test('should return error if no command is sent', async () => {
     const result = await parseCommand('', '1234567');
-    assert(result.includes('open: Use this command to open the door'), 'Test failed: should provide general help');
+    assert(result.includes('No command'), 'Test failed: should return an error');
+  });
+
+  test('should return error if no phone is sent', async () => {
+    const result = await parseCommand('help', '');
+    assert(result.includes('No phone'), 'Test failed: should return an error with no phone');
+  });
+
+  test('should return general help', async () => {
+    const result = await parseCommand('help', '1234567');
+    assert(result.includes("Available commands:\n"), 'Test failed: should handle generic help topic');
   });
 
   test('should handle help on help topic', async () => {
     const result = await parseCommand('help help', '1234567');
-    assert(result.includes('Help topic not found'), 'Test failed: should handle help on help topic');
+    assert(result.includes("help: Use this command to get help. Example: 'help open' or 'h o'"), 'Test failed: should handle help on help topic');
   });
 
   test('should provide specific help', async () => {
@@ -105,7 +115,6 @@ function test(description, fn) {
 
   test('should provide specific help using an alias', async () => {
     const result = await parseCommand('help opne', '1234567');
-    console.log(result);
     assert(result.includes('Use this command to open the door'), 'Test failed: should provide specific help with an alias');
   });
 

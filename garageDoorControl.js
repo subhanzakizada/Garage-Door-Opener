@@ -43,6 +43,11 @@ const actions = [
     expectedArguments: 0,
     aliases: ['help', 'h', 'hlp', 'hepl'],
     handler: (argument) => {
+
+      if(!argument){
+        return actions.map(action => "Available commands:\n" + `${action.action}: ${action.help}`).join('\n');
+      }
+
       const action = actions.find(a => a.aliases.includes(argument));
       return action ? `${action.action}: ${action.help}` : "Help topic not found.";
     },
@@ -52,8 +57,18 @@ const actions = [
 
 // Function to parse and validate commands
 async function parseCommand(command, phone) {
-  if (!command) {
-    return actions.map(action => `${action.action}: ${action.help}`).join('\n');
+  if(!command){
+    return "No command";
+  }
+
+  if(!phone){
+    return "No phone";
+  }
+
+  // Retrieve user data
+  const user = await getUser(phone);
+  if (!user) {
+    return `User with phone number ${phone} not found.`;
   }
 
   // Convert the command to lowercase and trim whitespace
@@ -66,29 +81,23 @@ async function parseCommand(command, phone) {
 
   // Find the matching action
   const action = actions.find(action => action.aliases.includes(actionWord));
-  if (!action) {
-    return "Invalid command. Supported commands are 'open', 'close', 'status', and 'help'.";
+  if(!action){
+    return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
   }
 
   // Check if the correct number of arguments are provided
-  if (parts.length - 1 < action.expectedArguments) {
+  if(parts.length - 1 < action.expectedArguments){
     return `Invalid command format. ${action.help}`;
   }
 
   // If the action is 'help', handle it directly
-  if (action.action === 'help') {
+  if(action.action === 'help'){
     return action.handler(argument);
-  }
-
-  // Retrieve user data
-  const user = await getUser(phone);
-  if (!user) {
-    return `User with phone number ${phone} not found.`;
   }
 
   // Find the door
   const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
-  if (!door) {
+  if(!door){
     return `Door '${argument}' not found. Available doors are: ${user.doors.map(door => door.name).join(", ")}.`;
   }
 
