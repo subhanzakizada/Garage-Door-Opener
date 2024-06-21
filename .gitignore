@@ -14,7 +14,6 @@ out/
 .env
 
 # IDE files
-.vscode/
 .idea/
 
 # OS generated files
