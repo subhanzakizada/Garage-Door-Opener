@@ -1,12 +1,14 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const { parseCommand } = require('./garageDoorControl'); 
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // If something wrong with Heroku's server
-if (!port) {
+if(!port) {
     console.error("Error: The PORT environment variable is not set. The server will only run on Heroku.");
     process.exit(1); // Exit the process with a failure code
 }
@@ -21,9 +23,24 @@ app.get('/', (req, res) => {
 });
 
 // Endpoint to handle incoming SMS messages from Twilio
-app.post('/sms', (req, res) => {
-    const smsData = req.body;
+app.post('/sms', smsHandler);
+app.get('/sms', smsHandler);
+    
+async function smsHandler(req, res){
+    
+    var smsData;
 
+    if(req.method === 'GET'){
+        smsData = req.query;
+    }
+    else if(req.method === 'POST'){
+        smsData = req.body;
+    }
+    else{
+        res.status(405).send('Method Not Allowed');
+        return;
+    }
+    
     // Extract data from the request body
     const from = smsData.From;         // Phone number of the sender
     const body = smsData.Body;         // The SMS message
@@ -40,16 +57,16 @@ app.post('/sms', (req, res) => {
     console.log(`Country: ${country}`);
     console.log(`ZIP: ${zip}`);
 
-    // // Parse the SMS message and get the response
-    // const responseMessage = parseCommand(body);
+    // Parse the SMS message and get the response
+    const responseMessage = await parseCommand(body, from);
 
-    // // Respond to Twilio to acknowledge receipt of the SMS and send the response back to the user
-    // res.send(`
-    //     <Response>
-    //         <Message>${responseMessage}</Message>
-    //     </Response>
-    // `);
-});
+    // Respond to Twilio to acknowledge receipt of the SMS and send the response back to the user
+    res.send(`
+        <Response>
+            <Message>${responseMessage}</Message>
+        </Response>
+    `);
+}
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
