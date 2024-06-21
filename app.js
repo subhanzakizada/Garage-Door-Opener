@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const sms = require('./sms');
+const api = require('./api');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +20,7 @@ app.get('/', (req, res) => {
 
 // App modules
 app.use('/sms', sms);
-//app.use('/api', api);
+app.use('/api', api);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
