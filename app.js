@@ -7,19 +7,13 @@ const { parseCommand } = require('./garageDoorControl');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// If something wrong with Heroku's server
-if(!port) {
-    console.error("Error: The PORT environment variable is not set. The server will only run on Heroku.");
-    process.exit(1); // Exit the process with a failure code
-}
-
 // Middleware to parse incoming POST data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Root endpoint (testing to see if the server is up and running)
 app.get('/', (req, res) => {
-    res.send('Hello, Hello, Hello!!!!!!!!!');
+    res.send('Welcome to Garage Opener Project');
 });
 
 // Endpoint to handle incoming SMS messages from Twilio
@@ -56,7 +50,7 @@ async function smsHandler(req, res){
     console.log(`State: ${state}`);
     console.log(`Country: ${country}`);
     console.log(`ZIP: ${zip}`);
-
+ 
     // Parse the SMS message and get the response
     const responseMessage = await parseCommand(body, from);
 
