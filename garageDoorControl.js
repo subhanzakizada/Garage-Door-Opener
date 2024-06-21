@@ -1,17 +1,34 @@
 const { getUser } = require('./user');
 
+function validateDoor(user, argument){
+  // Find the door
+  const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
+  
+  if(!door){
+    return `Door '${argument}' not found. Available doors are: ${user.doors.map(door => door.name).join(", ")}.`;
+  }
+
+  return door;
+}
+
 // Action handlers
-const open = async (door) => {
+const open = async (user, argument) => {
+  const door = validateDoor(user, argument);
+  if(typeof door === 'string') return door;
   door.status = 'open';
   return `Opening ${door.name}...`;
 };
 
-const close = async (door) => {
+const close = async (user, argument) => {
+  const door = validateDoor(user, argument);
+  if(typeof door === 'string') return door;
   door.status = 'closed';
   return `Closing ${door.name}...`;
 };
 
-const status = async (door) => {
+const status = async (user, argument) => {
+  const door = validateDoor(user, argument);
+  if(typeof door === 'string') return door;
   return `Status of ${door.name}: ${door.status}`;
 };
 
@@ -42,7 +59,7 @@ const actions = [
     action: 'help',
     expectedArguments: 0,
     aliases: ['help', 'h', 'hlp', 'hepl'],
-    handler: (argument) => {
+    handler: (user, argument) => {
 
       if(!argument){
         return actions.map(action => "Available commands:\n" + `${action.action}: ${action.help}`).join('\n');
@@ -67,7 +84,7 @@ async function parseCommand(command, phone) {
 
   // Retrieve user data
   const user = await getUser(phone);
-  if (!user) {
+  if(!user){
     return `User with phone number ${phone} not found.`;
   }
 
@@ -90,19 +107,7 @@ async function parseCommand(command, phone) {
     return `Invalid command format. ${action.help}`;
   }
 
-  // If the action is 'help', handle it directly
-  if(action.action === 'help'){
-    return action.handler(argument);
-  }
-
-  // Find the door
-  const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
-  if(!door){
-    return `Door '${argument}' not found. Available doors are: ${user.doors.map(door => door.name).join(", ")}.`;
-  }
-
-  // Execute the action handler
-  return action.handler(door);
+  return action.handler(user, argument);
 }
 
 module.exports = { parseCommand };
