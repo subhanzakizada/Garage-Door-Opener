@@ -7,9 +7,9 @@ const users = {
   
 // Function to get user by phone number
 // Just a test async function that will be replaced with the real data we will use
-  async function getUser(phone) {
-    return users[phone] || null;
-  }
-  
-  module.exports = { getUser };
+async function getUser(phone){
+  return users[phone] || null;
+}
+
+module.exports = { getUser };
   
