@@ -3,8 +3,19 @@ const server = express.Router();
 
 module.exports = server;
 
+
+server.get('/controller/command', (req, res) => {
+    //Get commands for the controller to execute
+    res.sendStatus(403);
+});
+
+server.put('/door', (req, res) => {
+    //Update status of a door
+    res.sendStatus(403);
+});
+
+//Mock (not needed)
 server.get('/door/status', (req, res) =>{
-    ///
     res.json([
         {
             door: "left",
