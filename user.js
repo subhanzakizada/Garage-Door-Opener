@@ -7,7 +7,7 @@ let dbClient;
 async function connectToMongoDB() {
     if (!dbClient) {
         try {
-            dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+            dbClient = new MongoClient(uri);
             await dbClient.connect();
             console.log('Connected to MongoDB');
         } catch (error) {
@@ -25,6 +25,7 @@ async function getUser(phone) {
         const database = dbClient.db();
         const collection = database.collection('users');
         const user = await collection.findOne({ phone });
+        console.log(phone);
         return user;
     } catch (error) {
         console.error('Error fetching user:', error);
