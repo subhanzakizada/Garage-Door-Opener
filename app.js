@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 // Root endpoint (testing to see if the server is up and running)
 app.get('/', (req, res) => {
-    res.send('Welcome to Garage Opener Project');
+    res.send('Welcome to Garage Opener Project.');
 });
 
 // App modules

@@ -25,7 +25,7 @@ async function getUser(phone) {
         const database = dbClient.db();
         const collection = database.collection('users');
         const user = await collection.findOne({ phone });
-        console.log(phone);
+        console.log("the phone number is: " + phone);
         return user;
     } catch (error) {
         console.error('Error fetching user:', error);

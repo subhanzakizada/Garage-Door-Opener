@@ -84,6 +84,7 @@ async function parseCommand(command, phone) {
 
   // Retrieve user data
   const user = await getUser(phone);
+  console.log('The phone number is :' + phone + " for testing.");
   if(!user){
     return `User with phone number ${phone} not found.`;
   }
