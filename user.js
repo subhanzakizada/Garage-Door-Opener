@@ -1,18 +1,23 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
 
+const uri = process.env.MONGODB_URI;
 let dbClient;
 
-async function connect() {
+async function connectToMongoDB() {
     if (!dbClient) {
-        dbClient = new MongoClient(uri);
-        await dbClient.connect();
-        console.log('Connected to MongoDB');
+        try {
+            dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+            await dbClient.connect();
+            console.log('Connected to MongoDB');
+        } catch (error) {
+            console.error('Error connecting to MongoDB:', error);
+        }
     }
 }
 
-connect();
+// Ensure MongoDB connection is established
+connectToMongoDB();
 
 // Function to get user by phone number
 async function getUser(phone) {
@@ -29,7 +34,6 @@ async function getUser(phone) {
 
 module.exports = { getUser };
 
-  
 
   
   
