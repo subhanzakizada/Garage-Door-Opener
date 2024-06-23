@@ -12,7 +12,7 @@ async function connect() {
     }
 }
 
-// connect();
+connect();
 
 // Function to get user by phone number
 async function getUser(phone) {
@@ -28,5 +28,7 @@ async function getUser(phone) {
 }
 
 module.exports = { getUser };
+
+  
 
   
