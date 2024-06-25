@@ -1,5 +1,6 @@
 const express = require('express');
 const server = express.Router();
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 module.exports = server;
 
@@ -43,10 +44,11 @@ async function smsHandler(req, res){
     // Parse the SMS message and get the response
     const responseMessage = await parseCommand(body, from);
 
-    // Respond to Twilio to acknowledge receipt of the SMS and send the response back to the user
-    res.send(`
-        <Response>
-            <Message>${responseMessage}</Message>
-        </Response>
-    `);
+    // Generate TwiML response
+    const twiml = new MessagingResponse();
+    twiml.message(responseMessage);
+
+    // Send TwiML response back to Twilio
+    res.writeHead(200, { 'Content-Type': 'text/xml' });
+    res.end(twiml.toString());
 }
