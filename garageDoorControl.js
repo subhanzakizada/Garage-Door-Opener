@@ -1,4 +1,4 @@
-const { getUser } = require('./user');
+const { getUser, updateUser } = require('./user');
 
 function validateDoor(user, argument){
   // Find the door
@@ -16,6 +16,8 @@ const open = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
   door.status = 'open';
+  console.log("The user is: " + user.phone);
+  await updateUser(user.phone, door.name, 'opened'); // Update the user in the database
   return `Opening ${door.name}...`;
 };
 
@@ -23,6 +25,8 @@ const close = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
   door.status = 'closed';
+  console.log("The user is: " + user._id)
+  await updateUser(user.phone, door.name, 'closed'); // Update the user in the database
   return `Closing ${door.name}...`;
 };
 

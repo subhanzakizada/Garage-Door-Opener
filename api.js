@@ -3,7 +3,10 @@ const server = express.Router();
 
 module.exports = server;
 
+/*
+    This endpoint is used by the controller to get the commands to execute: open a door, close it, etc.
 
+*/
 server.get('/controller/command', (req, res) => {
     //Get commands for the controller to execute
     res.sendStatus(403);
