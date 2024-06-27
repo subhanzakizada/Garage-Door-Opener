@@ -32,6 +32,7 @@ const close = async (user, argument) => {
   if(typeof door === 'string') return door;
   
   const result = await processEvent('close', door.name, user);
+  // console.log(typeof user.doors)
   await updateUser(user.phone, door.name, 'closing');
   return result;
 

@@ -49,22 +49,24 @@ const stateMachine = {
 async function processEvent(eventName, doorIdentifier, user) {
     const event = {
         name: eventName,
-        door: doorIdentifier,
+        door: user.doors.find(d => d.name === doorIdentifier),
         user: user
     };
-    console.log("The user is :: " + user)
-    console.log("The user doors are :: " + user.doors)
-    for(const k in userDoors) {
-        console.log("the key is " + k + " and the value is " + userDoors[k])
-    }
-    console.log('\n\n')
-    console.log("The door identifier is :: " + doorIdentifier)
-    console.log('THE USER doors identifier is ' + user.doors[doorIdentifier])
+    // console.log("The user is :: " + user)
+    // console.log("The user doors are :: " + user.doors)
+
+    // for(let i = 0; user.doors.length > i; i++) {
+    //     console.log('USER DOORS: ')
+    // }
+
+    // console.log('\n\n')
+    // console.log("The door identifier is :: " + doorIdentifier)
+    console.log('THE USER doors[door] is ' + user.doors[door])
 
     // open/opening/closed/closing
-    const currentState = stateMachine[user.doors[doorIdentifier].status];
+    const currentState = stateMachine[user.doors[door].status];
     
-    console.log("The current state is :: " + currentState)
+    // console.log("The current state is :: " + currentState)
 
     if(!currentState){
         throw new Error("Invalid state");
