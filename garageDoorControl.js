@@ -21,10 +21,6 @@ const open = async (user, argument) => {
   await updateUser(user.phone, door.name, 'opening');
   return result;
 
-  // door.status = 'open';
-  // console.log("The user is: " + user.phone);
-  // await updateUser(user.phone, door.name, 'open'); // Update the status in the database
-  // return `Opening ${door.name}...`;
 };
 
 const close = async (user, argument) => {
@@ -32,14 +28,9 @@ const close = async (user, argument) => {
   if(typeof door === 'string') return door;
   
   const result = await processEvent('close', door.name, user);
-  // console.log(typeof user.doors)
   await updateUser(user.phone, door.name, 'closing');
   return result;
 
-  // door.status = 'closed';
-  // console.log("The user is: " + user._id)
-  // await updateUser(user.phone, door.name, 'closed'); // Update the status in the database
-  // return `Closing ${door.name}...`;
 };
 
 const status = async (user, argument) => {

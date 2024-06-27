@@ -1,5 +1,5 @@
 async function openDoor() {
-    console.log('Opening the door...');
+    console.log('Opening the door...');   
 }
     
 async function closeDoor() {
