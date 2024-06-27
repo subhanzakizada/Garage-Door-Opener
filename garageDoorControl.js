@@ -1,4 +1,5 @@
 const { getUser, updateUser } = require('./user');
+const { processEvent } = require('./stateMachine');
 
 function validateDoor(user, argument){
   // Find the door
@@ -78,37 +79,31 @@ const actions = [
 
 // Function to parse and validate commands
 async function parseCommand(command, phone) {
-  if(!command){
-    return "No command";
+  if (!command) {
+      return "No command";
   }
 
-  if(!phone){
-    return "No phone";
+  if (!phone) {
+      return "No phone";
   }
 
-  // Retrieve user data
   const user = await getUser(phone);
-  if(!user){
-    return `User with phone number ${phone} not found.`;
+  if (!user) {
+      return `User with phone number ${phone} not found.`;
   }
 
-  // Convert the command to lowercase and trim whitespace
   command = command.toLowerCase().trim();
-
-  // Split the command into parts
   const parts = command.split(" ");
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
 
-  // Find the matching action
   const action = actions.find(action => action.aliases.includes(actionWord));
-  if(!action){
-    return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
+  if (!action) {
+      return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
   }
 
-  // Check if the correct number of arguments are provided
-  if(parts.length - 1 < action.expectedArguments){
-    return `Invalid command format. ${action.help}`;
+  if (parts.length - 1 < action.expectedArguments) {
+      return `Invalid command format. ${action.help}`;
   }
 
   return action.handler(user, argument);
