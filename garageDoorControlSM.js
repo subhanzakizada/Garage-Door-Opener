@@ -54,6 +54,10 @@ async function processEvent(eventName, doorIdentifier, user) {
     };
     console.log("The user is :: " + user)
     console.log("The user doors are :: " + user.doors)
+    for(const k in userDoors) {
+        console.log("the key is " + k + " and the value is " + userDoors[k])
+    }
+    console.log('\n\n')
     console.log("The door identifier is :: " + doorIdentifier)
     console.log('THE USER doors identifier is ' + user.doors[doorIdentifier])
 
