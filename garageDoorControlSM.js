@@ -49,9 +49,10 @@ const stateMachine = {
 async function processEvent(eventName, doorIdentifier, user) {
     const event = {
         name: eventName,
-        door: user.doors.find(d => d.name === doorIdentifier),
-        user: user
+        user: user,
+        door: user.doors.find(d => d.name === doorIdentifier)
     };
+    const door = user.doors.find(d => d.name === doorIdentifier)
     // console.log("The user is :: " + user)
     // console.log("The user doors are :: " + user.doors)
 
@@ -61,10 +62,10 @@ async function processEvent(eventName, doorIdentifier, user) {
 
     // console.log('\n\n')
     // console.log("The door identifier is :: " + doorIdentifier)
-    console.log('THE USER doors[door] is ' + user.doors[event.door])
+    console.log('THE USER doors[door] is ' + user.doors[door])
 
     // open/opening/closed/closing
-    const currentState = stateMachine[user.doors[event.door].status];
+    const currentState = stateMachine[user.door.status];
     
     // console.log("The current state is :: " + currentState)
 
