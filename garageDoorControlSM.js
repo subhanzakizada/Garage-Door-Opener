@@ -52,8 +52,11 @@ async function processEvent(eventName, doorIdentifier, user) {
         door: doorIdentifier,
         user: user
     };
-    
+    console.log("The user is :: " + user)
+    console.log("The user doors are :: " + user.doors)
     console.log("The door identifier is :: " + doorIdentifier)
+    console.log('THE USER doors identifier is ' + user.doors[doorIdentifier])
+
     // open/opening/closed/closing
     const currentState = stateMachine[user.doors[doorIdentifier].status];
     
