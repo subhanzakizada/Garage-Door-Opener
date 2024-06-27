@@ -1,22 +1,29 @@
-async function openDoor() {
-    console.log('Opening the door...');   
+async function openDoor(event) {
+    console.log('Opening the door...');
+    // Simulate a 5-second delay
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('The door is now open.', event);
 }
-    
-async function closeDoor() {
+
+async function closeDoor(event) {
     console.log('Closing the door...');
+    // Simulate a 5-second delay
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('The door is now closed.', event);
 }
-    
-async function ignoreEvent(event){
+
+async function ignoreEvent(event) {
     console.log('Ignoring event', event);
 }
-    
-async function notifyClose(event){
+
+async function notifyClose(event) {
     console.log('Door closed', event);
 }
-    
-async function notifyOpen(event){
+
+async function notifyOpen(event) {
     console.log('Door opened', event);
 }
+
     
 const stateMachine = {
     open: [
