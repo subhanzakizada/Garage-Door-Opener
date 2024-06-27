@@ -52,23 +52,10 @@ async function processEvent(eventName, doorIdentifier, user) {
         user: user,
         door: user.doors.find(d => d.name === doorIdentifier)
     };
-    const door = user.doors.find(d => d.name === doorIdentifier)
-    // console.log("The user is :: " + user)
-    // console.log("The user doors are :: " + user.doors)
-
-    // for(let i = 0; user.doors.length > i; i++) {
-    //     console.log('USER DOORS: ')
-    // }
-
-    // console.log('\n\n')
-    // console.log("The door identifier is :: " + doorIdentifier)
-    console.log('THE USER doors[door] is ' + door.status)
 
     // open/opening/closed/closing
-    const currentState = stateMachine[door.status];
+    const currentState = stateMachine[event.door.status];
     
-    // console.log("The current state is :: " + currentState)
-
     if(!currentState){
         throw new Error("Invalid state");
     }
@@ -76,7 +63,7 @@ async function processEvent(eventName, doorIdentifier, user) {
     for(x=0; x<currentState.length/3; x++){
         if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
             await currentState[(x*3)+2](event);
-            door.status = currentState[(x*3)+1];
+            event.door.status = currentState[(x*3)+1];
             return "Processed";
         }
     }
