@@ -1,5 +1,5 @@
 const { getUser, updateUser } = require('./user');
-const { processEvent } = require('./stateMachine');
+const { processEvent } = require('./garageDoorControlSM');
 
 function validateDoor(user, argument){
   // Find the door
@@ -18,7 +18,7 @@ const open = async (user, argument) => {
   if(typeof door === 'string') return door;
   door.status = 'open';
   console.log("The user is: " + user.phone);
-  await updateUser(user.phone, door.name, 'opened'); // Update the user in the database
+  await updateUser(user.phone, door.name, 'open'); // Update the user in the database
   return `Opening ${door.name}...`;
 };
 
