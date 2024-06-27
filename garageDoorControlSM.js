@@ -76,7 +76,7 @@ async function processEvent(eventName, doorIdentifier, user) {
     for(x=0; x<currentState.length/3; x++){
         if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
             await currentState[(x*3)+2](event);
-            user.doors[doorIdentifier].status = currentState[(x*3)+1];
+            door.status = currentState[(x*3)+1];
             return "Processed";
         }
     }
