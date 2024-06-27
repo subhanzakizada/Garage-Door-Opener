@@ -16,19 +16,29 @@ function validateDoor(user, argument){
 const open = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  door.status = 'open';
-  console.log("The user is: " + user.phone);
-  await updateUser(user.phone, door.name, 'open'); // Update the user in the database
-  return `Opening ${door.name}...`;
+  
+  const result = await processEvent('open', door.name, user);
+  await updateUser(user.phone, door.name, 'opening');
+  return result;
+
+  // door.status = 'open';
+  // console.log("The user is: " + user.phone);
+  // await updateUser(user.phone, door.name, 'open'); // Update the status in the database
+  // return `Opening ${door.name}...`;
 };
 
 const close = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  door.status = 'closed';
-  console.log("The user is: " + user._id)
-  await updateUser(user.phone, door.name, 'closed'); // Update the user in the database
-  return `Closing ${door.name}...`;
+  
+  const result = await processEvent('close', door.name, user);
+  await updateUser(user.phone, door.name, 'closing');
+  return result;
+
+  // door.status = 'closed';
+  // console.log("The user is: " + user._id)
+  // await updateUser(user.phone, door.name, 'closed'); // Update the status in the database
+  // return `Closing ${door.name}...`;
 };
 
 const status = async (user, argument) => {
