@@ -44,6 +44,8 @@ async function smsHandler(req, res){
     // Parse the SMS message and get the response
     const responseMessage = await parseCommand(body, from);
 
+    console.log("The responseMessage is : " + responseMessage);
+
     // Generate TwiML response
     const twiml = new MessagingResponse();
     twiml.message(responseMessage);

@@ -107,7 +107,7 @@ async function parseCommand(command, phone) {
   if (parts.length - 1 < action.expectedArguments) {
       return `Invalid command format. ${action.help}`;
   }
-
+  
   return action.handler(user, argument);
 }
 

@@ -11,6 +11,8 @@ async function openDoor(event) {
     operationInProgress[event.door.name] = false;  // Mark door as done
     // Automatically notify the user about the door status
     await notifyOpen(event);
+    // Return the completion message
+    return `The door ${event.door.name} has finished opening.`;
 }
 
 async function closeDoor(event) {
@@ -24,6 +26,8 @@ async function closeDoor(event) {
     operationInProgress[event.door.name] = false;  // Mark door as done
     // Automatically notify the user about the door status
     await notifyClose(event);
+    // Return the completion message
+    return `The door ${event.door.name} has finished closing.`;
 }
 
 async function ignoreEvent(event) {
@@ -99,3 +103,4 @@ async function processEvent(eventName, doorIdentifier, user) {
 }
 
 module.exports = { processEvent };
+
