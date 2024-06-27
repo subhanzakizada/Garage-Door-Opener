@@ -53,8 +53,11 @@ async function processEvent(eventName, doorIdentifier, user) {
         user: user
     };
     
+    // open/opening/closed/closing
     const currentState = stateMachine[user.doors[doorIdentifier].status];
     
+    console.log(currentState)
+
     if(!currentState){
         throw new Error("Invalid state");
     }
