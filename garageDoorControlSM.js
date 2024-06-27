@@ -62,10 +62,10 @@ async function processEvent(eventName, doorIdentifier, user) {
 
     // console.log('\n\n')
     // console.log("The door identifier is :: " + doorIdentifier)
-    console.log('THE USER doors[door] is ' + user.doors[door])
+    console.log('THE USER doors[door] is ' + door.status)
 
     // open/opening/closed/closing
-    const currentState = stateMachine[user.door.status];
+    const currentState = stateMachine[door.status];
     
     // console.log("The current state is :: " + currentState)
 
