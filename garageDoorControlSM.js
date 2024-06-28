@@ -1,31 +1,23 @@
-let operationInProgress = {};  // To track the doors being operated on
 
 async function openDoor(event) {
-    console.log('Opening the door...');
-    operationInProgress[event.door.name] = true;  // Mark door as operating
+    console.log('Opening the door...', event);
 
-    // Simulate a 5-second delay
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    console.log('The door is now open.', event);
-    operationInProgress[event.door.name] = false;  // Mark door as done
+    // console.log('The door is now open.');
     // Automatically notify the user about the door status
-    await notifyOpen(event);
+    // await notifyOpen(event);
     // Return the completion message
     return `The door ${event.door.name} has finished opening.`;
 }
 
 async function closeDoor(event) {
     console.log('Closing the door...');
-    operationInProgress[event.door.name] = true;  // Mark door as operating
 
     // Simulate a 5-second delay
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    // await new Promise(resolve => setTimeout(resolve, 5000));
 
-    console.log('The door is now closed.', event);
-    operationInProgress[event.door.name] = false;  // Mark door as done
+    // console.log('The door is now closed.', event);
     // Automatically notify the user about the door status
-    await notifyClose(event);
+    // await notifyClose(event);
     // Return the completion message
     return `The door ${event.door.name} has finished closing.`;
 }
@@ -82,17 +74,14 @@ async function processEvent(eventName, doorIdentifier, user) {
         door: user.doors.find(d => d.name === doorIdentifier)
     };
 
-    if (operationInProgress[doorIdentifier]) {
-        return await ignoreEvent(event);
-    }
-
     // open/opening/closed/closing
     const currentState = stateMachine[event.door.status];
-    
+    console.log("The current state variable is: ")
     if (!currentState) {
         throw new Error("Invalid state");
     }
-    
+    // 5 (close) / 3 = 1.6
+
     for (let x = 0; x < currentState.length / 3; x++) {
         if (eventName === currentState[x * 3] || currentState[x * 3] === 'any') {
             const result = await currentState[(x * 3) + 2](event);
