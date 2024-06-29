@@ -73,7 +73,7 @@ async function processEvent(eventName, door) {
         if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
             await currentState[(x*3)+2](event);
             event.door.status = currentState[(x*3)+1];
-            console.log( "Processed" ) ;
+            // console.log( "Processed" ) ;
             break;
         }
     }
