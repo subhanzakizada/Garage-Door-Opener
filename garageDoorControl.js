@@ -11,23 +11,24 @@ function validateDoor(user, argument){
   return door;
 }
 
-// Action handlers
+// SMS open handler
 const open = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  door.status = 'open';
-  console.log("The user is: " + user.phone);
-  await updateUser(user.phone, door.name, 'opened'); // Update the user in the database
-  return `Opening ${door.name}...`;
+
+  const result = await processEvent('open', door, user);
+  await updateUser(user.phone, door.name, result);
+  return result;
 };
 
+// SMS close handler
 const close = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  door.status = 'closed';
-  console.log("The user is: " + user._id)
-  await updateUser(user.phone, door.name, 'closed'); // Update the user in the database
-  return `Closing ${door.name}...`;
+
+  const result = await processEvent('close', door, user);
+  await updateUser(user.phone, door.name, result);
+  return result;
 };
 
 const status = async (user, argument) => {
