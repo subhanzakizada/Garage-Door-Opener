@@ -1,41 +1,13 @@
 const { MongoClient } = require('mongodb');
-<<<<<<< HEAD
-
-const uri = process.env.MONGODB_URI;
-let dbClient;
-
-async function connectToMongoDB() {
-    if (!dbClient) {
-        try {
-            dbClient = new MongoClient(uri);
-            await dbClient.connect();
-            console.log('Connected to MongoDB');
-        } catch (error) {
-            console.error('Error connecting to MongoDB:', error);
-        }
-    }
-}
-
-// Ensure MongoDB connection is established
-connectToMongoDB();
-
-// Function to get user by phone number
-=======
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
->>>>>>> 14dfdd332f7d96a6472d1ebcaf8616c0c1969e77
 async function getUser(phone) {
     try {
         await client.connect();
         const database = client.db();
         const collection = database.collection('users');
-<<<<<<< HEAD
-        const user = await collection.findOne({ phone });
-        console.log("the phone number is: " + phone);
-=======
         const user = await collection.findOne({ phone: phone });
->>>>>>> 14dfdd332f7d96a6472d1ebcaf8616c0c1969e77
         return user;
     } catch (error) {
         console.error('Error retrieving user:', error);
