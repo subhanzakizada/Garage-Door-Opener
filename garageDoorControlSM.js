@@ -1,40 +1,72 @@
-const stateMachine = require('./stateMachine');
-const sm = new stateMachine('garageDoor'); 
-
-async function simulateCloseLeft() {
-    console.log('Simulating closing the left door...');
-    // Simulate closing process, e.g., wait for 10 seconds
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    console.log('Left door closed');
+async function openDoor() {
+    console.log('Opening the door...');
 }
 
-async function simulateOpenLeft() {
-    console.log('Simulating opening the left door...');
-    // Simulate opening process, e.g., wait for 10 seconds
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    console.log('Left door opened');
+async function closeDoor() {
+    console.log('Closing the door...');
 }
 
-sm.state('open')
-    .when((event) => event.toLowerCase() === 'close left')
-        .then(async (event) => { 
-            console.log('Closing the left door');
-            sm.currentState = 'closed'
-            await simulateCloseLeft();
-            console.log('Left door fully closed');
-            return 'closed'; 
-        });
+async function ignoreEvent(event){
+    console.log('Ignoring event', event);
+}
 
-sm.state('closed')
-    .when((event) => event.toLowerCase() === 'open left') // I will change "event === ..." logic later, it doesn't work so I'm not working on that yet
-        .then(async (event) => { 
-            console.log('Opening the left door');
-            sm.currentState = 'opened'
-            await simulateOpenLeft();
-            console.log('Left door fully opened');
-            return 'open'; 
-        });
+async function notifyClose(event){
+    console.log('Door closed', event);
+}
 
-sm.currentState = 'closed';
+async function notifyOpen(event){
+    console.log('Door opened', event);
+}
 
-module.exports = sm;
+const stateMachine = {
+    open: [
+    'close', 'closing', closeDoor,
+    'any','open',ignoreEvent
+    ],
+    closing: [
+    'close_complete','closed',notifyClose,
+    'any',  'closing',ignoreEvent
+    ],
+    closed: [
+    'open', 'opening',openDoor,
+        'any','closed',ignoreEvent
+    ],
+    opening: [
+    'open_complete', 'open',    notifyOpen,
+    'any',  'opening', ignoreEvent
+]
+};
+
+/*
+    The event object has the following structure:
+
+    event = {
+        name: 'open|close|open_complete|close_complete',
+        door: 'a identifier',
+        user: {} //the current users
+    }
+*/  
+
+async function processEvent(eventName, doorIdentifier, user) {
+    const event = {
+        name: eventName,
+        door: doorIdentifier,
+        user: user
+    };
+
+    const currentState = stateMachine[user.doors[doorIdentifier].status];
+
+    if(!currentState){
+        throw new Error("Invalid state");
+    }
+
+    for(x=0; x<currentState.length/3; x++){
+        if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
+            await currentState[(x*3)+2](event);
+            user.doors[doorIdentifier].status = currentState[(x*3)+1];
+            return "Processed";
+            }
+    }
+}
+
+module.exports = { processEvent };
