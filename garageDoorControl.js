@@ -13,6 +13,7 @@ function validateDoor(user, argument){
 
 // SMS open handler
 const open = async (user, argument) => {
+  console.log(argument);
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
 
@@ -23,6 +24,7 @@ const open = async (user, argument) => {
 
 // SMS close handler
 const close = async (user, argument) => {
+  console.log(argument);
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
 
