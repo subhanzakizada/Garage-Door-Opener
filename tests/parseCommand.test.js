@@ -1,5 +1,6 @@
 const { parseCommand } = require('../garageDoorControl');
 const { getUser } = require('../user');
+const { test, assert } = require('./common');
 
 // Mock getUser function for testing purposes
 const mockUsers = {
@@ -14,23 +15,23 @@ const mockGetUser = async (phone) => {
 // Override the original getUser function with the mock
 require.cache[require.resolve('../user')].exports.getUser = mockGetUser;
 
-// Basic assertion function for testing
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message || "Assertion failed");
-  }
-}
+// // Basic assertion function for testing
+// function assert(condition, message) {
+//   if (!condition) {
+//     throw new Error(message || "Assertion failed");
+//   }
+// }
 
-// Test runner function
-function test(description, fn) {
-  try {
-    fn();
-    console.log(`✔️  ${description}`);
-  } catch (error) {
-    console.error(`❌  ${description}`);
-    console.error(error);
-  }
-}
+// // Test runner function
+// function test(description, fn) {
+//   try {
+//     fn();
+//     console.log(`✔️  ${description}`);
+//   } catch (error) {
+//     console.error(`❌  ${description}`);
+//     console.error(error);
+//   }
+// }
 
 (async () => {
   console.log("Running parseCommand function tests...");
