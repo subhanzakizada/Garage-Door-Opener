@@ -16,19 +16,17 @@ function validateDoor(user, argument){
 const open = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  
   const result = await processEvent('open', door.name, user);
-  await updateUser(user.phone, door.name, 'opening');
+  await updateUser(user.phone, door.name, result);
   return result;
-
 };
 
 const close = async (user, argument) => {
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-  
+
   const result = await processEvent('close', door.name, user);
-  await updateUser(user.phone, door.name, 'closing');
+  await updateUser(user.phone, door.name, result);
   return result;
 
 };

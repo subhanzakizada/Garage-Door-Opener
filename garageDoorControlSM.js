@@ -6,14 +6,14 @@ async function openDoor(event) {
     // Automatically notify the user about the door status
     // await notifyOpen(event);
     // Return the completion message
-    return `The door ${event.door.name} has finished opening.`;
+    return `The door ${event.doorIdentifier} has finished opening.`;
 }
 
 async function closeDoor(event) {
     console.log('Closing the door...');
 
     // Simulate a 5-second delay
-    // await new Promise(resolve => setTimeout(resolve, 5000));
+    // await new Promise(resolve    => setTimeout(resolve, 5000));
 
     // console.log('The door is now closed.', event);
     // Automatically notify the user about the door status
@@ -71,14 +71,14 @@ async function processEvent(eventName, doorIdentifier, user) {
     const event = {
         name: eventName,
         user: user,
-        door: user.doors.find(d => d.name === doorIdentifier)
+        door: user.doors.find((d)=>d.name ===doorIdentifier)
     };
 
     // open/opening/closed/closing
     const currentState = stateMachine[event.door.status];
-    console.log("The current state variable is: ")
-    console.log('And the event.door.status variable is: ' + event.door.status)
-    console.log('\n\n\n')
+    // console.log("The current state variable is: ")
+    // console.log('And the event.door.status variable is: ' + event.door.status)
+    // console.log('\n\n\n')
     if (!currentState) {
         throw new Error("Invalid state");
     }
@@ -87,8 +87,7 @@ async function processEvent(eventName, doorIdentifier, user) {
     for (let x = 0; x < currentState.length / 3; x++) {
         if (eventName === currentState[x * 3] || currentState[x * 3] === 'any') {
             const result = await currentState[(x * 3) + 2](event);
-            event.door.status = currentState[(x * 3) + 1];
-            return result;
+            return currentState[(x * 3) + 1];
         }
     }
 }

@@ -1,6 +1,9 @@
 const express = require('express');
 const server = express.Router();
 
+const sm = require('./garageDoorControlSM');
+const users = require('./user');
+
 module.exports = server;
 
 
@@ -9,9 +12,23 @@ server.get('/controller/command', (req, res) => {
     res.sendStatus(403);
 });
 
+
+/*
+    {
+        status: open_complete
+        controller_id: id
+    }
+*/
 server.put('/door', (req, res) => {
-    //Update status of a door
-    res.sendStatus(403);
+    const controller_id = req.body.controller_id;
+    const status = req.body.status;
+    
+    const user = users.getUserByControllerId(controller_id);
+    
+    const nextState = await sm.processEvent(status, user.doors.find((d) => d.controller_id === controller_id).name, user);  
+    //Uopdate user state
+    
+    res.send("Ok");
 });
 
 //Mock (not needed)

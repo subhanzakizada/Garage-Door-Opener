@@ -1,0 +1,27 @@
+#PUT against status
+
+PUT http://localhost:3000/door
+Content-Type: application/application/json
+
+{
+    "controller_id": "123",
+    "status": "open_complete"
+}
+
+### Close complete
+
+PUT http://localhost:3000/door
+Content-Type: application/application/json
+
+{
+    "controller_id": "123",
+    "status": "close_complete"
+}
+
+###
+
+GET https://garage-door-opener-e9c148ad2376.herokuapp.com/sms?From=%2B12532937820&Body=help
+
+###
+
+
