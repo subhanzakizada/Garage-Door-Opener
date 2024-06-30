@@ -1,4 +1,5 @@
 const { getUser, updateUser } = require('./user');
+const { processEvent } = require('./garageDoorControlSM');
 
 function validateDoor(user, argument){
   // Find the door
@@ -11,26 +12,27 @@ function validateDoor(user, argument){
   return door;
 }
 
-// SMS open handler
+// Action handlers
 const open = async (user, argument) => {
-  console.log(argument);
+  console.log('The argument is ' + argument);
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-
-  const result = await processEvent('open', door, user);
-  await updateUser(user.phone, door.name, result);
+  
+  const result = await processEvent('open', door);
+  await updateUser(user.phone, door.name, 'opening');
   return result;
+
 };
 
-// SMS close handler
 const close = async (user, argument) => {
-  console.log(argument);
+  console.log('The argument is ' + argument);
   const door = validateDoor(user, argument);
   if(typeof door === 'string') return door;
-
-  const result = await processEvent('close', door, user);
-  await updateUser(user.phone, door.name, result);
+  
+  const result = await processEvent('close', door);
+  await updateUser(user.phone, door.name, 'closing');
   return result;
+
 };
 
 const status = async (user, argument) => {
@@ -81,40 +83,33 @@ const actions = [
 
 // Function to parse and validate commands
 async function parseCommand(command, phone) {
-  if(!command){
-    return "No command";
+  if (!command) {
+      return "No command";
   }
 
-  if(!phone){
-    return "No phone";
+  if (!phone) {
+      return "No phone";
   }
 
-  // Retrieve user data
   const user = await getUser(phone);
-  console.log('The phone number is :' + phone + " for testing.");
-  if(!user){
-    return `User with phone number ${phone} not found.`;
+  if (!user) {
+      return `User with phone number ${phone} not found.`;
   }
 
-  // Convert the command to lowercase and trim whitespace
   command = command.toLowerCase().trim();
-
-  // Split the command into parts
   const parts = command.split(" ");
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
 
-  // Find the matching action
   const action = actions.find(action => action.aliases.includes(actionWord));
-  if(!action){
-    return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
+  if (!action) {
+      return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
   }
 
-  // Check if the correct number of arguments are provided
-  if(parts.length - 1 < action.expectedArguments){
-    return `Invalid command format. ${action.help}`;
+  if (parts.length - 1 < action.expectedArguments) {
+      return `Invalid command format. ${action.help}`;
   }
-
+  
   return action.handler(user, argument);
 }
 
