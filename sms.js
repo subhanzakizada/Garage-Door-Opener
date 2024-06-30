@@ -47,6 +47,7 @@ async function smsHandler(req, res){
     // Generate TwiML response
     const twiml = new MessagingResponse();
     twiml.message(responseMessage);
+    console.log('The message is ' + responseMessage);
 
     // Send TwiML response back to Twilio
     res.writeHead(200, { 'Content-Type': 'text/xml' });
