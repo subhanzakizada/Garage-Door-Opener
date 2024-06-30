@@ -13,27 +13,41 @@ function validateDoor(user, argument){
 }
 
 // Action handlers
-const open = async (user, argument) => {
-  console.log('The argument is ' + argument);
-  const door = validateDoor(user, argument);
+// const open = async (user, argument) => {
+//   console.log('The argument is ' + argument);
+//   const door = validateDoor(user, argument);
+//   if(typeof door === 'string') return door;
+  
+//   const result = await processEvent('open', door);
+//   await updateUser(user.phone, door.name, 'opening');
+//   return result;
+
+// };
+
+// const close = async (user, argument) => {
+//   const door = validateDoor(user, argument);
+//   if(typeof door === 'string') return door;
+  
+//   const result = await processEvent('close', door);
+//   await updateUser(user.phone, door.name, 'closing');
+//   return result;
+
+// };
+
+/* 
+  doorParam = main/left/right 
+  user = { phone: "1234567", doors: [{ name: "left", status: "open" }, { name: "right", status: "closed" }] }
+  action = open/close
+*/
+const process = async (user, action, doorParam) => {
+  const door = validateDoor(user, doorParam);
   if(typeof door === 'string') return door;
   
-  const result = await processEvent('open', door);
-  await updateUser(user.phone, door.name, 'opening');
+  const result = await processEvent(action, door);
+  await updateUser(user.phone, door.name, action + 'ing');
   return result;
+}
 
-};
-
-const close = async (user, argument) => {
-  console.log('The argument is ' + argument);
-  const door = validateDoor(user, argument);
-  if(typeof door === 'string') return door;
-  
-  const result = await processEvent('close', door);
-  await updateUser(user.phone, door.name, 'closing');
-  return result;
-
-};
 
 const status = async (user, argument) => {
   const door = validateDoor(user, argument);
@@ -47,14 +61,14 @@ const actions = [
     action: 'open',
     expectedArguments: 1,
     aliases: ['open', 'o', 'op', 'ope', 'opne'],
-    handler: open,
+    handler: process,
     help: "Use this command to open the door. If you only have one door, no arguments are needed. If you have multiple, the door name or number is required. Example: 'open left' or 'o 1'"
   },
   {
     action: 'close',
     expectedArguments: 1,
     aliases: ['close', 'c', 'cl', 'clos', 'clsoe'],
-    handler: close,
+    handler: process,
     help: "Use this command to close the door. If you only have one door, no arguments are needed. If you have multiple, the door name or number is required. Example: 'close right' or 'c 2'"
   },
   {
@@ -100,9 +114,6 @@ async function parseCommand(command, phone) {
   const parts = command.split(" ");
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
-
-  console.log('The argument is ' + argument);
-
 
   const action = actions.find(action => action.aliases.includes(actionWord));
   if (!action) {
