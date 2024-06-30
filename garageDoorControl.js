@@ -101,6 +101,9 @@ async function parseCommand(command, phone) {
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
 
+  console.log('The argument is ' + argument);
+
+
   const action = actions.find(action => action.aliases.includes(actionWord));
   if (!action) {
       return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
@@ -110,7 +113,6 @@ async function parseCommand(command, phone) {
       return `Invalid command format. ${action.help}`;
   }
   
-  return action.handler(user, argument);
 }
 
 module.exports = { parseCommand };
