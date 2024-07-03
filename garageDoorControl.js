@@ -13,26 +13,26 @@ function validateDoor(user, argument){
 }
 
 // Action handlers
-// const open = async (user, argument) => {
-//   console.log('The argument is ' + argument);
-//   const door = validateDoor(user, argument);
-//   if(typeof door === 'string') return door;
+const open = async (user, argument) => {
+  console.log('The argument is ' + argument);
+  const door = validateDoor(user, argument);
+  if(typeof door === 'string') return door;
   
-//   const result = await processEvent('open', door);
-//   await updateUser(user.phone, door.name, 'opening');
-//   return result;
+  const result = await processEvent('open', door);
+  await updateUser(user.phone, door.name, 'opening');
+  return result;
 
-// };
+};
 
-// const close = async (user, argument) => {
-//   const door = validateDoor(user, argument);
-//   if(typeof door === 'string') return door;
+const close = async (user, argument) => {
+  const door = validateDoor(user, argument);
+  if(typeof door === 'string') return door;
   
-//   const result = await processEvent('close', door);
-//   await updateUser(user.phone, door.name, 'closing');
-//   return result;
+  const result = await processEvent('close', door);
+  await updateUser(user.phone, door.name, 'closing');
+  return result;
 
-// };
+};
 
 /* 
   doorParam = main/left/right 
@@ -61,14 +61,14 @@ const actions = [
     action: 'open',
     expectedArguments: 1,
     aliases: ['open', 'o', 'op', 'ope', 'opne'],
-    handler: process,
+    handler: open,
     help: "Use this command to open the door. If you only have one door, no arguments are needed. If you have multiple, the door name or number is required. Example: 'open left' or 'o 1'"
   },
   {
     action: 'close',
     expectedArguments: 1,
     aliases: ['close', 'c', 'cl', 'clos', 'clsoe'],
-    handler: process,
+    handler: close,
     help: "Use this command to close the door. If you only have one door, no arguments are needed. If you have multiple, the door name or number is required. Example: 'close right' or 'c 2'"
   },
   {
