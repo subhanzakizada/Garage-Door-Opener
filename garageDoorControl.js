@@ -13,25 +13,45 @@ function validateDoor(user, argument){
 }
 
 // Action handlers
+// const open = async (user, argument) => {
+//   // console.log('The argument is ' + argument);
+//   const door = validateDoor(user, argument);
+//   if(typeof door === 'string') return door;
+  
+//   const result = await processEvent('open', door);
+//   await updateUser(user.phone, door.name, 'opening');
+//   return result;
+// };
+
+// Action handlers
 const open = async (user, argument) => {
-  console.log('The argument is ' + argument);
   const door = validateDoor(user, argument);
-  if(typeof door === 'string') return door;
+  if (typeof door === 'string') return door;
   
   const result = await processEvent('open', door);
   await updateUser(user.phone, door.name, 'opening');
-  return result;
-
+  // return `Opening ${door.name}`;
 };
 
+
+// const close = async (user, argument) => {
+//   const door = validateDoor(user, argument);
+//   if(typeof door === 'string') return door;
+  
+//   const result = await processEvent('close', door);
+//   await updateUser(user.phone, door.name, 'closing');
+//   return result;
+
+// };
+
+// Action handlers
 const close = async (user, argument) => {
   const door = validateDoor(user, argument);
-  if(typeof door === 'string') return door;
+  if (typeof door === 'string') return door;
   
-  const result = await processEvent('close', door);
-  await updateUser(user.phone, door.name, 'closing');
-  return result;
-
+  const result = await processEvent('open', door);
+  await updateUser(user.phone, door.name, 'opening');
+  return `Closing ${door.name}`;
 };
 
 /* 
@@ -109,13 +129,20 @@ async function parseCommand(command, phone) {
   if (!user) {
       return `User with phone number ${phone} not found.`;
   }
-
   command = command.toLowerCase().trim();
   const parts = command.split(" ");
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
 
+  // console.log('parts: ' + parts);
+  // console.log('actionWord: ' + actionWord);
+  // console.log('argument: ' + argument);
+
   const action = actions.find(action => action.aliases.includes(actionWord));
+  // console.log('action: ' + action)
+  // console.log(JSON.stringify(action, null, 2));
+
+
   if (!action) {
       return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
   }
@@ -124,6 +151,9 @@ async function parseCommand(command, phone) {
       return `Invalid command format. ${action.help}`;
   }
   
+
+  const result = await action.handler(user, argument);
+  return result;
 }
 
 module.exports = { parseCommand };
