@@ -73,7 +73,7 @@ async function processEvent(eventName, door) {
             try {
                 event.door.status = currentState[(x*3)+1];
                 await currentState[(x*3)+2](event);
-                return `Status of ${event.door.name}: ${event.name}`;
+                return `Status of ${event.door.name}: ${currentState[(x*3)+2]}`;
             } catch(error){
                 log(error);
                 throw error;
@@ -84,5 +84,12 @@ async function processEvent(eventName, door) {
     //Should never get here because all states have an "any" event. So all events should be handled.
     return null;
 }
+
+// (async () => {
+//     const door =  { name: "left", status: "open" };
+//     const res = await processEvent('open', door);
+//     console.log(res);
+// }) ();
+
 
 module.exports = { processEvent };
