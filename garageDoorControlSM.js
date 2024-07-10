@@ -57,6 +57,11 @@ async function processEvent(eventName, door) {
         door: door,
     };
 
+    // Check if the door is in the middle of an action
+    if (event.door.status === 'opening' || event.door.status === 'closing') {
+        return `The door ${event.door.name} is currently ${event.door.status}. Please wait until the process is done and try again.`;
+    }
+
     const currentState = stateMachine[event.door.status];
 
     if(!currentState){

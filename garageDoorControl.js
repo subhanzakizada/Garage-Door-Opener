@@ -30,7 +30,7 @@ const open = async (user, argument) => {
   
   const result = await processEvent('open', door);
   await updateUser(user.phone, door.name, 'opening');
-  // return `Opening ${door.name}`;
+  return `Opening ${door.name}`;
 };
 
 
@@ -129,6 +129,7 @@ async function parseCommand(command, phone) {
   if (!user) {
       return `User with phone number ${phone} not found.`;
   }
+  
   command = command.toLowerCase().trim();
   const parts = command.split(" ");
   const actionWord = parts[0];

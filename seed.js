@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const { parseCommand } = require('./garageDoorControl');
 
 const uri = process.env.MONGODB_URI;
 
@@ -47,7 +48,7 @@ async function connectToMongoDB() {
             await dbClient.connect();
             console.log('Connected to MongoDB');
 
-            const database = dbClient.db('Garage-Door-Opener'); 
+            const database = dbClient.db(); 
             console.log('Using database:', database.databaseName);
 
         } catch (error) {
@@ -62,7 +63,7 @@ async function checkDb() {
         await connectToMongoDB();
 
         // Specify the database and collection
-        const database = dbClient.db('Garage-Door-Opener'); // Replace with your database name
+        const database = dbClient.db(); // Replace with your database name
         console.log('Using database:', database.databaseName); // Add this line to log the database name
         const collection = database.collection('users'); // Replace with your collection name
 
@@ -81,6 +82,19 @@ async function checkDb() {
     }
 }
 
-seedDatabase().then(() => {
+// seedDatabase().then(() => {
+//     checkDb();
+// });
+
+
+// (async () => {
+//     const data = await parseCommand('Close left', '+12532937820');
+//     console.log(data);
+// })();
+
+
+(async () => {
+//     const data = await parseCommand('Close left', '+12532937820');
+//     console.log(data);
     checkDb();
-});
+})();
