@@ -73,7 +73,7 @@ async function processEvent(eventName, door) {
             try {
                 event.door.status = currentState[(x*3)+1];
                 await currentState[(x*3)+2](event);
-                return `Status of ${event.door.name}: ${currentState[(x*3)+2]}`;
+                return `Status of ${event.door.name}: ${currentState[(x+1)]}`;
             } catch(error){
                 log(error);
                 throw error;
@@ -86,7 +86,7 @@ async function processEvent(eventName, door) {
 }
 
 // (async () => {
-//     const door =  { name: "left", status: "open" };
+//     const door =  { name: "left", status: "closed" };
 //     const res = await processEvent('open', door);
 //     console.log(res);
 // }) ();
