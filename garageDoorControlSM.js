@@ -73,7 +73,7 @@ async function processEvent(eventName, door) {
             try {
                 event.door.status = currentState[(x*3)+1];
                 await currentState[(x*3)+2](event);
-                return event.door;
+                return `Status of ${event.door}: ${event.eventName}`;
             } catch(error){
                 log(error);
                 throw error;
