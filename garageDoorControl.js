@@ -30,7 +30,9 @@ const open = async (user, argument) => {
   
   const result = await processEvent('open', door);
   await updateUser(user.phone, door.name, 'opening');
-  return `Opening ${door.name}`;
+  // return `Opening ${door.name}`;
+  return result;
+
 };
 
 
@@ -51,7 +53,9 @@ const close = async (user, argument) => {
   
   const result = await processEvent('open', door);
   await updateUser(user.phone, door.name, 'opening');
-  return `Closing ${door.name}`;
+  // return `Closing ${door.name}`;
+  return result;
+
 };
 
 /* 
