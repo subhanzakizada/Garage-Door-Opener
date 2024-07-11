@@ -1,82 +1,40 @@
-const { getUser, updateUser } = require('./user');
 const { processEvent } = require('./garageDoorControlSM');
 
-function validateDoor(user, argument){
-  // Find the door
+function findDoor(user, argument){
+  // Find the door by name or number
   const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
   
   if(!door){
-    return `Door '${argument}' not found. Available doors are: ${user.doors.map(door => door.name).join(", ")}.`;
+    throw new Error(`Door '${argument}' not found. Available doors are: ${user.doors.map(door => door.name).join(", ")}.`);
   }
-
+  
   return door;
 }
 
 // Action handlers
-// const open = async (user, argument) => {
-//   // console.log('The argument is ' + argument);
-//   const door = validateDoor(user, argument);
-//   if(typeof door === 'string') return door;
-  
-//   const result = await processEvent('open', door);
-//   await updateUser(user.phone, door.name, 'opening');
-//   return result;
-// };
-
-// Action handlers
 const open = async (user, argument) => {
-  const door = validateDoor(user, argument);
-  if (typeof door === 'string') return door;
-  
-  const result = await processEvent('open', door);
-  await updateUser(user.phone, door.name, 'opening');
-  // return `Opening ${door.name}`;
-  return result;
-
+  const door = findDoor(user, argument);
+  return await processEvent('open', door);
 };
 
-
-// const close = async (user, argument) => {
-//   const door = validateDoor(user, argument);
-//   if(typeof door === 'string') return door;
-  
-//   const result = await processEvent('close', door);
-//   await updateUser(user.phone, door.name, 'closing');
-//   return result;
-
-// };
-
-// Action handlers
 const close = async (user, argument) => {
-  const door = validateDoor(user, argument);
-  if (typeof door === 'string') return door;
-  
-  const result = await processEvent('open', door);
-  await updateUser(user.phone, door.name, 'opening');
-  // return `Closing ${door.name}`;
-  return result;
-
+  const door = findDoor(user, argument);
+  return await processEvent('close', door);
 };
-
-/* 
-  doorParam = main/left/right 
-  user = { phone: "1234567", doors: [{ name: "left", status: "open" }, { name: "right", status: "closed" }] }
-  action = open/close
-*/
-const process = async (user, action, doorParam) => {
-  const door = validateDoor(user, doorParam);
-  if(typeof door === 'string') return door;
-  
-  const result = await processEvent(action, door);
-  await updateUser(user.phone, door.name, action + 'ing');
-  return result;
-}
-
 
 const status = async (user, argument) => {
-  const door = validateDoor(user, argument);
-  if(typeof door === 'string') return door;
-  return `Status of ${door.name}: ${door.status}`;
+  //If no argument is provided, return the status of all doors
+  if(!argument){
+    return {
+      msg: user.doors.map(door => `Door "${door.name}" is ${door.status}`).join('\n')
+    }
+  }
+
+  const door = findDoor(user, argument);
+  
+  return {
+    msg: `Status of ${door.name}: ${door.status}`
+  }
 };
 
 // Define the command actions with additional metadata
@@ -97,7 +55,7 @@ const actions = [
   },
   {
     action: 'status',
-    expectedArguments: 1,
+    expectedArguments: 0,
     aliases: ['status', 's', 'stat', 'stauts'],
     handler: status,
     help: "Use this command to get the status of the door. If you only have one door, no arguments are needed. If you have multiple, the door name or number is required. Example: 'status main' or 's 3'"
@@ -109,54 +67,34 @@ const actions = [
     handler: (user, argument) => {
 
       if(!argument){
-        return actions.map(action => "Available commands:\n" + `${action.action}: ${action.help}`).join('\n');
+        return { msg: actions.map(action => "Available commands:\n" + `${action.action}: ${action.help}`).join('\n') };
       }
 
       const action = actions.find(a => a.aliases.includes(argument));
-      return action ? `${action.action}: ${action.help}` : "Help topic not found.";
+      const msg = action ? `${action.action}: ${action.help}` : "Help topic not found.";
+      return { msg: msg };
     },
     help: "Use this command to get help. Example: 'help open' or 'h o'"
   }
 ];
 
 // Function to parse and validate commands
-async function parseCommand(command, phone) {
-  if (!command) {
-      return "No command";
-  }
+async function parseCommand(user, command) {
 
-  if (!phone) {
-      return "No phone";
-  }
-
-  const user = await getUser(phone);
-  if (!user) {
-      return `User with phone number ${phone} not found.`;
-  }
+  if(!command) throw new Error("No command");
+  if (!user) throw new Error("No user");
   
   command = command.toLowerCase().trim();
   const parts = command.split(" ");
   const actionWord = parts[0];
   const argument = parts.slice(1).join(' ');
 
-  // console.log('parts: ' + parts);
-  // console.log('actionWord: ' + actionWord);
-  // console.log('argument: ' + argument);
-
   const action = actions.find(action => action.aliases.includes(actionWord));
-  // console.log('action: ' + action)
-  // console.log(JSON.stringify(action, null, 2));
-
-
-  if (!action) {
-      return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
-  }
-
-  if (parts.length - 1 < action.expectedArguments) {
-      return `Invalid command format. ${action.help}`;
-  }
   
+  if (!action) throw new Error(`Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`);
 
+  if (parts.length - 1 < action.expectedArguments) throw new Error(`Invalid command format. ${action.help}`);
+  
   const result = await action.handler(user, argument);
   return result;
 }

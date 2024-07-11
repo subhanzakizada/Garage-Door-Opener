@@ -6,7 +6,7 @@ const client = new MongoClient(uri);
 async function getUser(phone) {
     try {
         await client.connect();
-        const database = client.db();
+        const database = client.db("GarageDoor");
         const collection = database.collection('users');
         const user = await collection.findOne({ phone: phone });
         return user;
@@ -16,6 +16,10 @@ async function getUser(phone) {
     } finally {
         await client.close();
     }
+}
+
+async function getDoorByControllerId(controllerId){
+    //ToDo: Implement this function
 }
 
 async function updateUser(phone, doorName, status) {
