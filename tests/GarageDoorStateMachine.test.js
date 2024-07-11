@@ -1,58 +1,46 @@
 const garageDoorSM = require('../garageDoorControlSM');
 const { test, assert } = require('./common');
 
-const { log } = console;
-
 (async () => {
 
-    function updateUserDoor(user, door){
-        var x = user.doors.findIndex((d) => d.name === door.name);
-        user.doors[x].status = door.status;
-    }
-
     test('Test opening the door & ignore event', async () => {
-        const user = {
-            doors: [
-                {
-                    name: 'left',
-                    status: 'closed'
-                }
-            ]
+        var door = { 
+            name: "left", 
+            status: "closed" 
         };
-        var door = await garageDoorSM.processEvent('open', user.doors[0]);
-        log(user);
-        updateUserDoor(user, door);
-        assert(door.status==='opening', "Door is opening");
+        
+        var result = await garageDoorSM.processEvent('open', door);
 
-        //ignored
-        door = await garageDoorSM.processEvent('open', user.doors[0]);
-        assert(door.status==='opening', "Door is opening");
+        assert('opening', result.newState, "New status is opening");
+        assert('The door left is opening.', result.msg, "Msg the door is opening");
+        
+
+        //Ignored
+        door.status = 'opening';
+        result = await garageDoorSM.processEvent('open', door);
+        assert(result.newState, result.previousState, "Status is the same as before");
+        assert('opening', result.newState, "Status doesn't change");
     });
 
     test('Test full cycle for a door', async () => {
-        const user = { 
-                doors: [
-                    { 
+        var door = { 
                         name: "left", 
                         status: "closed" 
-                    }
-                ]
-        };
+                    };
 
-        var door = await garageDoorSM.processEvent('open', user.doors[0]);
-        // updateUserDoor(user, door);
-        assert(user.doors[0].status==='opening', "Door is opening");
+        var result = await garageDoorSM.processEvent('open', door);
+        assert('opening', result.newState, "New status is opening");
+        door.status = result.newState;
 
-        door = await garageDoorSM.processEvent('open_complete', user.doors[0]);
-        // updateUserDoor(user, door);
-        assert(door.status==='open', "Door is open");
+        result = await garageDoorSM.processEvent('open_complete', door);
+        assert('open', result.newState, "New status is open");
+        door.status = result.newState;
 
-        door = await garageDoorSM.processEvent('close', user.doors[0]);
-        // updateUserDoor(user, door);
-        assert(door.status==='closing', "Door is closing");
+        result = await garageDoorSM.processEvent('close', door);
+        assert('closing',result.newState, "New status is closing");
+        door.status = result.newState;
 
-        door = await garageDoorSM.processEvent('close_complete', user.doors[0]);
-        // updateUserDoor(user, door);
-        assert(door.status==='closed', "Door is closed");
+        result = await garageDoorSM.processEvent('close_complete', door);
+        assert('closed', result.newState, "Door is closed");
     });
 })();

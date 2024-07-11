@@ -101,7 +101,7 @@ async function processEvent(eventName, door, notifier) {
                     name: door.name,
                     previousState: door.status
                 };
-                result.newStatus = currentState[(x*3)+1];
+                result.newState = currentState[(x*3)+1];
                 result.msg = await currentState[(x*3)+2](event);
                 return result;
             } catch(error){

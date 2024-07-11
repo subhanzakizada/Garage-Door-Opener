@@ -10,8 +10,8 @@ exports.test = (description, fn) => {
 };
 
 // Basic assertion function for testing
-exports.assert = (condition, message) => {
-    if(!condition){
-      throw new Error(message || "Assertion failed");
+exports.assert = (expected, value, message) => {
+    if(expected !== value){
+      throw new Error((message || "Assertion failed: ") + '\nExpected: [' + expected + "] but got: [" + value + "]");  
     }
 };
