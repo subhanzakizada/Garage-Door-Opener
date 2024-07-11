@@ -33,6 +33,17 @@ async function notifyOpen(event){
     return msg;
 }
 
+/*
+    State machine representation:
+
+    Every property is a "state"
+    Each state has an array of 3 elements:
+        - the expected event
+        - the state to which it transitions when the event happens
+        - the action to be executed as part of this transition
+    
+    Any given state can have many matching events, so the array will always have muliples of 3 elements total.
+*/
 const stateMachine = {
     open: [
         'close', 'closing', closeDoor,
@@ -58,26 +69,33 @@ const stateMachine = {
     event = {
         name: 'open|close|open_complete|close_complete',
         door: {} // the door object to be processed,
+        notifier: {} // the notifier object to send messages (used only for open_complete and close_complete events because these events are sent by the controller)
     }
 
-    The state machine returns the new door object with the updated status and a message.
+    The state machine returns:
+        - The door "previous" state
+        - The door "new" state (if changed)
+        - A message
+
+        New and previous can be used to determine if the door status changed and if the user should be updated 
 */  
 
 async function processEvent(eventName, door, notifier) {
     const event = {
-        name: eventName,
-        door: door,
-        notifier: notifier
+        name: eventName,        //Open/Close/State/Complete
+        door: door,             //The door object
+        notifier: notifier      //An (optional and not always used) notifier object
     };
 
     const currentState = stateMachine[event.door.status];
 
     if(!currentState){
-        throw new Error("Invalid state");
+        throw new Error("Invalid state");   //This should never happen
     }
 
     for(x=0; x<currentState.length/3; x++){
         if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
+            //Found a matching event for the state OR "any"
             try {
                 const result = {
                     name: door.name,
@@ -87,6 +105,7 @@ async function processEvent(eventName, door, notifier) {
                 result.msg = await currentState[(x*3)+2](event);
                 return result;
             } catch(error){
+                //ToDo: log error other than console
                 log(error);
                 throw error;
             }
