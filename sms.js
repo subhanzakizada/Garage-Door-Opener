@@ -46,6 +46,10 @@ async function smsHandler(req, res, next){
     var response = {};
     try{
         response = await parseCommand(user, body);
+        //ToDO: if the state of the door changed, update the user
+        // if(result.newStatus !== result.previousStatus){
+        //     users.updateUser();
+        //
         console.log(response);
     }catch(error){
         //ToDo:Log the error

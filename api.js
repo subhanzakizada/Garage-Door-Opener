@@ -26,6 +26,10 @@ server.post('/door', (req, res, next) => {
     }
     try{
         const result = garageDoorSM.processEvent(req.body.status, door, notifier);
+        //ToDO: if the state of the door changed, update the user
+        // if(result.newStatus !== result.previousStatus){
+        //     users.updateUser();
+        //
         return res.send("OK");
     }catch(error){
         return next(error);
