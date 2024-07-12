@@ -7,3 +7,7 @@ Content-Type: application/json
   "controllerId": "some-id",
   "status": "open_complete"
 }
+
+### Simulates a controller getting states to work on
+
+GET http://localhost:3000/api/controller/command/some-id

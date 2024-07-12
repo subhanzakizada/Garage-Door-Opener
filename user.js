@@ -20,6 +20,11 @@ async function getUser(phone) {
 
 async function getDoorByControllerId(controllerId){
     //ToDo: Implement this function
+    return {
+        status: "closed",
+        controllerId: controllerId,
+        name: "left"
+    };
 }
 
 async function updateUser(phone, doorName, status) {
@@ -45,7 +50,7 @@ async function updateUser(phone, doorName, status) {
   }
 }
 
-module.exports = { getUser, updateUser };
+module.exports = { getUser, updateUser, getDoorByControllerId };
 
 
   
