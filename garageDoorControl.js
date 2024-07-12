@@ -1,6 +1,10 @@
 const { processEvent } = require('./garageDoorControlSM');
 
 function findDoor(user, argument){
+  // console.log('the user: ' + user)
+  // console.log('the argument ' + argument)
+
+
   // Find the door by name or number
   const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
   
@@ -81,8 +85,11 @@ const actions = [
 // Function to parse and validate commands
 async function parseCommand(user, command) {
 
-  if(!command) throw new Error("No command");
-  if (!user) throw new Error("No user");
+  // if(!command) throw new Error("No command");
+  // if (!user) throw new Error("No user");
+
+  if(!command) return "No command";
+  if (!user) return "No user";
   
   command = command.toLowerCase().trim();
   const parts = command.split(" ");
@@ -90,13 +97,24 @@ async function parseCommand(user, command) {
   const argument = parts.slice(1).join(' ');
 
   const action = actions.find(action => action.aliases.includes(actionWord));
-  
-  if (!action) throw new Error(`Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`);
 
-  if (parts.length - 1 < action.expectedArguments) throw new Error(`Invalid command format. ${action.help}`);
+  // console.log('the action word: ' + actionWord)
+  // console.log('the action is: ' + actionWord)
+
+  // console.log('the user : ' + user)
+  // console.log('the argument: ' + argument)
+
   
+  if (!action) return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
+  // if (!action) throw new Error(`Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`);
+
+  // if (parts.length - 1 < action.expectedArguments) throw new Error(`Invalid command format. ${action.help}`);
+  if (parts.length - 1 < action.expectedArguments) return `Invalid command format. ${action.help}`;
+
   const result = await action.handler(user, argument);
-  return result;
+  // console.log("THE RESULT IS: " + JSON.stringify(result, null, 2));
+
+  return result.msg;
 }
 
 module.exports = { parseCommand };
