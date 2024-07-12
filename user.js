@@ -19,12 +19,33 @@ async function getUser(phone) {
 }
 
 async function getDoorByControllerId(controllerId){
+    try {
+        await client.connect();
+        const database = client.db();
+        const collection = database.collection();
+
+        const user = await collection.findOne({ "doors.controllerId": controllerId });
+        if (!user) {
+            return null;
+        }
+
+        const door = user.doors.find(door => door.controllerId === controllerId);
+        return door || null;
+    } catch (error) {
+        console.error('Error retrieving door:', error);
+        return null;
+    } finally {
+        await client.close();
+    }
+    
+    
+    
     //ToDo: Implement this function
-    return {
-        status: "closed",
-        controllerId: controllerId,
-        name: "left"
-    };
+    // return {
+    //     status: "closed",
+    //     controllerId: controllerId,
+    //     name: "left"
+    // };
 }
 
 async function updateUser(phone, doorName, status) {

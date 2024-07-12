@@ -7,7 +7,7 @@ const uri = process.env.MONGODB_URI;
 const users = [
     { phone: "1234567", doors: [{ name: "left", status: "open" }, { name: "right", status: "closed" }] },
     { phone: "7654321", doors: [{ name: "main", status: "closed" }] },
-    { phone: "+12532937820", doors: [{ name: "main", status: "closed" }, { name: "left", status: "closed" }, { name: "right", status: "closed" }] }
+    { phone: "+12532937820", doors: [{ name: "main", status: "closed" }, { name: "left", status: "open" }, { name: "right", status: "closed" }] }
 ];
 
 async function seedDatabase() {
@@ -93,8 +93,8 @@ async function checkDb() {
 // })();
 
 
-(async () => {
+// (async () => {
 //     const data = await parseCommand('Close left', '+12532937820');
 //     console.log(data);
-    checkDb();
-})();
+    // checkDb();
+// })();

@@ -31,12 +31,14 @@ server.post('/door', async (req, res, next) => {
     }
     try{
         const result = garageDoorSM.processEvent(req.body.status, door, notifier);
-        //ToDO: if the state of the door changed, update the user
-        // if(result.newStatus !== result.previousStatus){
-        //     users.updateUser();
-        //
+        
+        // If the state of the door changed, update the user's door status
+        if(result.status !== previousStatus) {
+            await users.updateUser(door.userPhone, door.name, result.status);
+        }
+
         return res.send("OK");
-    }catch(error){
+    } catch(error) {
         return next(error);
     }
 });
@@ -44,6 +46,20 @@ server.post('/door', async (req, res, next) => {
 //General handler
 //ToDo: Log error
 server.use((err, req, res, next) => {
-    console.error(err);
+    // console.error(err);
     res.sendStatus(500);
+
+    const errorDetails = {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        body: req.body,
+        query: req.query,
+        params: req.params,
+        timestamp: new Date().toISOString(),
+    };
+
+    // Is this what mean by "Log error" ?
+    console.error(errorDetails);
 });

@@ -15,23 +15,27 @@ async function ignoreEvent(event){
 
 //These 2 methods need a "notifier" system to send a message to the user
 //ToDo: simplify these 2 methods and make a generic one
-async function notifyClose(event){
-    console.log('Door closed', event);
-    const msg = `The door ${event.door.name} is now closed.`;
-    if(event.notifier){
-        await event.notifier.notify(event.door, msg);
+// Generic notification function
+async function notify(event, statusMessage) {
+    console.log(statusMessage, event);
+    if (event.notifier) {
+        await event.notifier.notify(event.door, statusMessage);
     }
-    return msg;
+    return statusMessage;
 }
 
-async function notifyOpen(event){
-    console.log('Door opened', event);
-    const msg = `The door ${event.door.name} is now open.`;
-    if(event.notifier){
-        await event.notifier.notify(event.door, msg);
-    }
-    return msg;
+// Simplified notifyClose function
+async function notifyClose(event) {
+    const msg = `The door ${event.door.name} is now closed.`;
+    return await notify(event, msg);
 }
+
+// Simplified notifyOpen function
+async function notifyOpen(event) {
+    const msg = `The door ${event.door.name} is now open.`;
+    return await notify(event, msg);
+}
+
 
 /*
     State machine representation:
