@@ -13,7 +13,7 @@ const notifier = require('./notifier');
     
 */
 server.get('/controller/command/:controllerId', async (req, res, next) => {
-    const door = await users.getDoorByControllerId(req.query.controllerId);
+    const door = await users.getDoorByControllerId(req.params.controllerId);
     if(!door){
         return res.status(404).send('Door not found');
     }
@@ -31,11 +31,12 @@ server.post('/door', async (req, res, next) => {
         return res.status(404).send('Door not found');
     }
     try{
-        const result = garageDoorSM.processEvent(req.body.status, door, notifier);
+        const previousStatus = door.status; // Store the previous status of the door
+        const result = await garageDoorSM.processEvent(req.body.status, door, notifier);
         
         // If the state of the door changed, update the user's door status
         if(result.status !== previousStatus) {
-            await users.updateUser(door.userPhone, door.name, result.status);
+            await users.updateUser(door.userPhone, door.name, result.newState);
         }
 
         return res.send("OK");
