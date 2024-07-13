@@ -12,7 +12,8 @@
     "express": "^4.19.2",
     "mongodb": "^6.7.0",
     "mongoose": "^8.4.3",
-    "twilio": "^5.2.0"
+    "twilio": "^5.2.0",
+    "winston": "^3.13.1"
   },
   "directories": {
     "test": "tests"

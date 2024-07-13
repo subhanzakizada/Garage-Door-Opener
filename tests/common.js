@@ -1,11 +1,13 @@
+const logger = require('../logger');
+
 // Test runner function
 exports.test = (description, fn) => {
     try {
       fn();
-      console.log(`✔️  ${description}`);
+      logger.info(`✔️  ${description}`);
     } catch (error) {
-      console.error(`❌  ${description}`);
-      console.error(error);
+      logger.error(`❌  ${description}`);
+      logger.error(error);
     }
 };
 

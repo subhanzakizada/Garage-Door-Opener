@@ -2,6 +2,7 @@
 const { MongoClient } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
+const logger = require('./logger');
 
 async function getUser(phone) {
     try {
@@ -11,7 +12,7 @@ async function getUser(phone) {
         const user = await collection.findOne({ phone: phone });
         return user;
     } catch (error) {
-        console.error('Error retrieving user:', error);
+        logger.error(`Error retrieving user: ${error}`);
         return null;
     } finally {
         await client.close();
@@ -32,7 +33,7 @@ async function getDoorByControllerId(controllerId){
         const door = user.doors.find(door => door.controllerId === controllerId);
         return door || null;
     } catch (error) {
-        console.error('Error retrieving door:', error);
+        logger.error(`Error retrieving door: ${error}`);
         return null;
     } finally {
         await client.close();
@@ -51,9 +52,13 @@ async function updateUser(phone, doorName, status) {
         { $set: { [`doors.$[door].status`]: status } },
         { arrayFilters: [{ 'door.name': doorName }] }
     );
+    
+    // Log the update result
+    logger.info(`Updated user with phone ${phone}: door ${doorName} status set to ${status}`);  
+
 
   } catch (error) {
-      console.error('Error updating door status:', error);
+    logger.error(`Error updating door status: ${error}`);
   } finally {
       // Close the client connection
       if (client) {

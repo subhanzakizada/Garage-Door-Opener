@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 async function openDoor(event) {
     return `The door ${event.door.name} is opening.`;
 }
@@ -7,13 +9,11 @@ async function closeDoor(event) {
 }
 
 async function ignoreEvent(event){
-    console.log('Ignoring event', event);
     return `The door "${event.door.name}" is currently ${event.door.status}.`;
 }
 
 // Generic notification function
 async function notify(event, statusMessage) {
-    console.log(statusMessage, event);
     if (event.notifier) {
         await event.notifier.notify(event.door, statusMessage);
     }
@@ -105,14 +105,14 @@ async function processEvent(eventName, door, notifier) {
                 result.msg = await currentState[(x*3)+2](event);
                 return result;
             } catch(error){
-                //ToDo: log error other than console
-                log(error);
+                // Log the Error
+                logger.error(`Error processing event '${eventName}': ${error.message}`);
                 throw error;
             }
         }
     }
 
-    //Should never get here because all states have an "any" event. So all events should be handled.
+    // Should never get here because all states have an "any" event. So all events should be handled.
     return null;
 }
 

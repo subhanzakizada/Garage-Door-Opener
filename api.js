@@ -1,5 +1,6 @@
 const express = require('express');
 const server = express.Router();
+const logger = require('./logger');
 
 module.exports = server;
 
@@ -58,5 +59,5 @@ server.use((err, req, res, next) => {
         timestamp: new Date().toISOString(),
     };
 
-    console.error(errorDetails);
+    logger.error(errorDetails);
 });

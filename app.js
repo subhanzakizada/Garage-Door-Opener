@@ -1,4 +1,5 @@
 require('dotenv').config();
+const logger = require('./logger');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -23,5 +24,5 @@ app.use('/sms', sms);
 app.use('/api', api);
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    logger.info(`Server is running on port ${port}`);
 });

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const { parseCommand } = require('./garageDoorControl');
+const logger = require('./logger');
 
 const uri = process.env.MONGODB_URI;
 
@@ -15,27 +16,28 @@ async function seedDatabase() {
 
     try {
         await client.connect();
-        console.log('Connected to MongoDB');
+        logger.info('Connected to MongoDB');
 
         // Add this line to log the database name
         const database = client.db();
-        console.log('Using database:', database.databaseName);
+        logger.info(`Using database: ${database.databaseName}`);
 
         const collection = database.collection('users');
 
-        console.log('Clearing existing data');
+        logger.info('Clearing existing data');
         await collection.deleteMany({}); // Clear existing data
 
-        console.log('Inserting new data');
+        logger.info('Inserting new data');
         await collection.insertMany(users);
-        console.log('Mock user data inserted');
 
+        logger.info('Mock user data inserted');
         await collection.insertOne({ name: 'John Doe', age: 30 });
+    
     } catch (error) {
-        console.error('MongoDB connection error:', error);
+        logger.error(`MongoDB connection error: ${error}`);
     } finally {
         await client.close();
-        console.log('MongoDB connection closed');
+        logger.info('MongoDB connection closed');
     }
 }
 
@@ -46,13 +48,13 @@ async function connectToMongoDB() {
         try {
             dbClient = new MongoClient(uri);
             await dbClient.connect();
-            console.log('Connected to MongoDB');
+            logger.info('Connected to MongoDB');
 
             const database = dbClient.db(); 
-            console.log('Using database:', database.databaseName);
+            logger.info(`Using database: ${database.databaseName}`);
 
         } catch (error) {
-            console.error('Error connecting to MongoDB:', error);
+            logger.error(`Error connecting to MongoDB: ${error}`);
         }
     }
 }
@@ -64,20 +66,22 @@ async function checkDb() {
 
         // Specify the database and collection
         const database = dbClient.db(); // Replace with your database name
-        console.log('Using database:', database.databaseName); // Add this line to log the database name
+        logger.info(`Using database: ${database.databaseName}`); // Add this line to log the database name
         const collection = database.collection('users'); // Replace with your collection name
 
         // Query the collection
         const users = await collection.find({}).toArray();
 
         // Log the results
-        console.log('Users:', users);
+        logger.info(`Users: ${users}`);
 
     } catch (error) {
-        console.error('Error fetching data from MongoDB:', error);
+        logger.error(`Error fetching data from MongoDB: ${error}`);
+    
     } finally {
         // Close the connection
         await dbClient.close();
         dbClient = null;
+        logger.info('MongoDB connection closed');
     }
 }

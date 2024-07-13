@@ -1,6 +1,7 @@
 const express = require('express');
 const server = express.Router();
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
+const logger = require('./logger');
 
 module.exports = server;
 
@@ -51,9 +52,9 @@ async function smsHandler(req, res, next){
         if(response.newStatus !== response.previousStatus){
             await users.updateUser(user.id, { doorStatus: response.newStatus });
         }
-        console.log(response);
-    }catch(error){
-        console.error(`Error parsing command for user ${user.id}:`, error);
+        logger.info(`Response: ${JSON.stringify(response)}`);
+    } catch(error){
+        logger.error(`Error parsing command for user ${user.id}: ${error}`);
         response.msg = error.message;
     }
     
@@ -63,6 +64,6 @@ async function smsHandler(req, res, next){
 // Global error handler for SMS
 // We should get here when a catastrophic error occurred
 server.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     sendSMSResponse(res, 'An error occurred while processing the request. Contact administrator.');
 });
