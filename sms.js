@@ -65,5 +65,6 @@ async function smsHandler(req, res, next){
 // We should get here when a catastrophic error occurred
 server.use((err, req, res, next) => {
     logger.error(err.stack);
+    logger.error(err);
     sendSMSResponse(res, 'An error occurred while processing the request. Contact administrator.');
 });
