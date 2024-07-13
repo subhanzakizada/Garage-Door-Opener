@@ -1,10 +1,8 @@
 async function openDoor(event) {
-    console.log('Opening the door...');
     return `The door ${event.door.name} is opening.`;
 }
 
 async function closeDoor(event) {
-    console.log('Closing the door...');
     return `The door ${event.door.name} is closing.`;
 }
 
@@ -13,8 +11,6 @@ async function ignoreEvent(event){
     return `The door "${event.door.name}" is currently ${event.door.status}.`;
 }
 
-//These 2 methods need a "notifier" system to send a message to the user
-//ToDo: simplify these 2 methods and make a generic one
 // Generic notification function
 async function notify(event, statusMessage) {
     console.log(statusMessage, event);

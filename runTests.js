@@ -1,24 +1,3 @@
-// const fs = require('fs');
-// const path = require('path');
-
-// // Directory containing test files
-// const testDir = path.join(__dirname, 'tests'); // creating a path, basically testDir = /Users/subhanzaki-zada/Documents/Garage-Door-Opener/tests
-
-// // Read all files from the test directory
-// const testFiles = fs.readdirSync(testDir); // an array with the names of the files in the directory passed in
-
-// // console.log(__dirname); // /Users/subhanzaki-zada/Documents/Garage-Door-Opener
-// // console.log(__dirname); // [ 'parseCommand.test.js' ]
-
-
-// // Run each test file
-// testFiles.forEach(file => {
-//   require(path.join(testDir, file));
-// });
-
-
-
-
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');

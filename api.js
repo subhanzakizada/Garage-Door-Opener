@@ -44,9 +44,7 @@ server.post('/door', async (req, res, next) => {
 });
 
 //General handler
-//ToDo: Log error
 server.use((err, req, res, next) => {
-    // console.error(err);
     res.sendStatus(500);
 
     const errorDetails = {
@@ -60,6 +58,5 @@ server.use((err, req, res, next) => {
         timestamp: new Date().toISOString(),
     };
 
-    // Is this what mean by "Log error" ?
     console.error(errorDetails);
 });

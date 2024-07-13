@@ -81,20 +81,3 @@ async function checkDb() {
         dbClient = null;
     }
 }
-
-// seedDatabase().then(() => {
-//     checkDb();
-// });
-
-
-// (async () => {
-//     const data = await parseCommand('Close left', '+12532937820');
-//     console.log(data);
-// })();
-
-
-// (async () => {
-//     const data = await parseCommand('Close left', '+12532937820');
-//     console.log(data);
-    // checkDb();
-// })();

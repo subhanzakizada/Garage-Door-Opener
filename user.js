@@ -37,15 +37,6 @@ async function getDoorByControllerId(controllerId){
     } finally {
         await client.close();
     }
-    
-    
-    
-    //ToDo: Implement this function
-    // return {
-    //     status: "closed",
-    //     controllerId: controllerId,
-    //     name: "left"
-    // };
 }
 
 async function updateUser(phone, doorName, status) {

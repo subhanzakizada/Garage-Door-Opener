@@ -46,20 +46,21 @@ async function smsHandler(req, res, next){
     var response = {};
     try{
         response = await parseCommand(user, body);
-        //ToDO: if the state of the door changed, update the user
-        // if(result.newStatus !== result.previousStatus){
-        //     users.updateUser();
-        //
+
+        // Check if the state of the door changed
+        if(response.newStatus !== response.previousStatus){
+            await users.updateUser(user.id, { doorStatus: response.newStatus });
+        }
         console.log(response);
     }catch(error){
-        //ToDo:Log the error
+        console.error(`Error parsing command for user ${user.id}:`, error);
         response.msg = error.message;
     }
     
     sendSMSResponse(res, response.msg);
 }
 
-//Global error handler for SMS
+// Global error handler for SMS
 // We should get here when a catastrophic error occurred
 server.use((err, req, res, next) => {
     console.error(err.stack);

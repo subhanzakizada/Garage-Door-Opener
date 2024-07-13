@@ -1,10 +1,6 @@
 const { processEvent } = require('./garageDoorControlSM');
 
 function findDoor(user, argument){
-  // console.log('the user: ' + user)
-  // console.log('the argument ' + argument)
-
-
   // Find the door by name or number
   const door = user.doors.find(door => door.name === argument || door.number === parseInt(argument, 10));
   
@@ -27,7 +23,7 @@ const close = async (user, argument) => {
 };
 
 const status = async (user, argument) => {
-  //If no argument is provided, return the status of all doors
+  // If no argument is provided, return the status of all doors
   if(!argument){
     return {
       msg: user.doors.map(door => `Door "${door.name}" is ${door.status}`).join('\n')
@@ -84,10 +80,6 @@ const actions = [
 
 // Function to parse and validate commands
 async function parseCommand(user, command) {
-
-  // if(!command) throw new Error("No command");
-  // if (!user) throw new Error("No user");
-
   if(!command) return "No command";
   if (!user) return "No user";
   
@@ -98,21 +90,11 @@ async function parseCommand(user, command) {
 
   const action = actions.find(action => action.aliases.includes(actionWord));
 
-  // console.log('the action word: ' + actionWord)
-  // console.log('the action is: ' + actionWord)
-
-  // console.log('the user : ' + user)
-  // console.log('the argument: ' + argument)
-
-  
   if (!action) return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
-  // if (!action) throw new Error(`Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`);
-
-  // if (parts.length - 1 < action.expectedArguments) throw new Error(`Invalid command format. ${action.help}`);
+ 
   if (parts.length - 1 < action.expectedArguments) return `Invalid command format. ${action.help}`;
 
   const result = await action.handler(user, argument);
-  // console.log("THE RESULT IS: " + JSON.stringify(result, null, 2));
 
   return result.msg;
 }
