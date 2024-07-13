@@ -96,7 +96,8 @@ async function parseCommand(user, command) {
 
   const result = await action.handler(user, argument);
 
-  return result.msg;
+  return result;
+  // return result.msg; - ParseCommand test cases are written for "return result.msg" format
 }
 
 module.exports = { parseCommand };
