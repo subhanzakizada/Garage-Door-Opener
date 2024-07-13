@@ -60,7 +60,7 @@ const { test, assert } = require('./common');
         assert('closed', result.newState, "Door is closed");
     });
 
-    test('Completion notifies user', async () => {
+    test('Completion of close notifies user', async () => {
         var door = { 
             name: "left", 
             status: "closing" 
@@ -74,5 +74,21 @@ const { test, assert } = require('./common');
 
         var result = await garageDoorSM.processEvent('close_complete', door, notifier);
         assert('closed', result.newState, "Door is closed");
+    });
+
+    test('Completion of open notifies user', async () => {
+        var door = { 
+            name: "left", 
+            status: "opening" 
+        };
+        
+        var notifier = {
+            notify: async (door, msg) => {
+                assert('The door left is now open.', msg, "Notify user door is open");
+            }
+        };
+
+        var result = await garageDoorSM.processEvent('open_complete', door, notifier);
+        assert('open', result.newState, "Door is open");
     });
 })();
