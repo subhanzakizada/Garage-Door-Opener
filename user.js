@@ -7,7 +7,7 @@ const logger = require('./logger');
 async function getUser(phone) {
     try {
         await client.connect();
-        const database = client.db("GarageDoor");
+        const database = client.db("");
         const collection = database.collection('users');
         const user = await collection.findOne({ phone: phone });
         return user;
