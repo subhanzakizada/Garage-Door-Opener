@@ -34,35 +34,36 @@ const { getUser, updateUser } = require('../user');
     try {
         test('Test command: status left', async () => {
             const result = await parseCommand(mockUser, 'status left');
-            assert('Status of left: closed', result, "Status left command");
+            console.log(result);
+            assert('Status of left: closed', result.msg, "Status left command");
         });
 
         // Close the door that's already closed
         test('Test command: close left', async () => {
             const result = await parseCommand(mockUser, 'close left');
-            assert('The door "left" is currently closed.', result, "Close left command");
+            assert('The door "left" is currently closed.', result.msg, "Close left command");
 
             const status = await parseCommand(mockUser, 'status left');
-            assert('Status of left: closed', status, "Status after closing left");
+            assert('Status of left: closed', status.msg, "Status after closing left");
         });
 
         test('Test command: open left', async () => {
             const result = await parseCommand(mockUser, 'open left');
-            assert('The door left is opening.', result, "Open left command");
+            assert('The door left is opening.', result.msg, "Open left command");
             await mockUpdateUser("+12532937820", "left", "opening");
 
             const status = await parseCommand(mockUser, 'status left');
-            assert('Status of left: opening', status, "Status after opening left");
+            assert('Status of left: opening', status.msg, "Status after opening left");
         });
 
          
         // Close an "opening" door
         test('Test command: close right', async () => {
           const result = await parseCommand(mockUser, 'c right');
-          assert('The door "right" is currently opening.', result, "Close right command");
+          assert('The door "right" is currently opening.', result.msg, "Close right command");
 
           const status = await parseCommand(mockUser, 'status right');
-          assert('Status of right: opening', status, "Status after opening right");
+          assert('Status of right: opening', status.msg, "Status after opening right");
       });
 
         test('Test invalid command', async () => {
