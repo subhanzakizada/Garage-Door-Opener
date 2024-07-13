@@ -87,6 +87,10 @@ async function processEvent(eventName, door, notifier) {
         notifier: notifier      //An (optional and not always used) notifier object
     };
 
+    if(!door){
+        throw new Error("No door");
+    }
+
     const currentState = stateMachine[event.door.status];
 
     if(!currentState){

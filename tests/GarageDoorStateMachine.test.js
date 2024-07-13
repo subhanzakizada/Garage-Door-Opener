@@ -3,6 +3,22 @@ const { test, assert } = require('./common');
 
 (async () => {
 
+    test('No door throws exception', async () => {
+        try{
+            await garageDoorSM.processEvent('open');
+        } catch(e){
+            assert("Error: No door", e.toString());    
+        }
+    });
+
+    test('Door with invalid state throws exception', async () => {
+        try{
+            await garageDoorSM.processEvent('open', { status: "foo" });
+        } catch(e){
+            assert("Error: Invalid state", e.toString());    
+        }
+    });
+
     test('Test opening the door & ignore event', async () => {
         var door = { 
             name: "left", 
