@@ -57,7 +57,7 @@ async function smsHandler(req, res, next){
         logger.error(`Error parsing command for user ${user.id}: ${error}`);
         response.msg = error.message;
     }
-    
+    logger.info(`Res is: ${res} and the response message is: ${response.msg}`);
     sendSMSResponse(res, response.msg);
 }
 
