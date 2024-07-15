@@ -67,7 +67,27 @@ async function updateUser(phone, doorName, status) {
   }
 }
 
-module.exports = { getUser, updateUser, getDoorByControllerId };
+async function updateUserDoorStatus(userId, doorName, newStatus) {
+    try {
+        await client.connect();
+        const database = client.db("");
+        const collection = database.collection('users');
+
+        const result = await collection.updateOne(
+            { userId: userId, "doors.name": doorName },
+            { $set: { "doors.$.status": newStatus } }
+        );
+
+        return result;
+    } catch (error) {
+        console.error('Error updating user door status:', error);
+        return null;
+    } finally {
+        await client.close();
+    }
+}
+
+module.exports = { getUser, updateUser, getDoorByControllerId, updateUserDoorStatus };
 
 
   

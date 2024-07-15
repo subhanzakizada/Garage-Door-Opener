@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { getUserByControllerId } = require('./user');
+const { getUserByControllerId, updateUserDoorStatus } = require('./user');
 const twilio = require('twilio');
 const logger = require('./logger');
 
@@ -24,9 +24,16 @@ exports.notify = async (door, msg) => {
         });
 
         logger.info(`Message sent to ${user.phone}: ${msg}`);
+
+        // Update the user's door status if the status has changed
+        if (door.previousStatus !== door.newStatus) {
+            await updateUserDoorStatus(user.userId, door.name, door.newStatus);
+        }
+
         return message;
     } catch (error) {
         logger.error('Error in notify:', error);
         throw error;
     }
 };
+
