@@ -1,3 +1,4 @@
+//const { error } = require('winston');
 const { processEvent } = require('./garageDoorControlSM');
 
 function findDoor(user, argument){
@@ -78,10 +79,22 @@ const actions = [
   }
 ];
 
+function errorMsg(msg){
+  return { msg: msg };
+}
+
 // Function to parse and validate commands
 async function parseCommand(user, command) {
-  if(!command) return "No command";
-  if (!user) return "No user";
+  
+  if(!user || typeof user !== 'object'){
+    throw new Error("Invalid user");
+  }
+
+  if(!user.doors || user.doors.length === 0){
+    return errorMsg('User has no doors');  
+  }
+
+  if(!command) return errorMsg("No command");
   
   command = command.toLowerCase().trim();
   const parts = command.split(" ");
@@ -90,14 +103,17 @@ async function parseCommand(user, command) {
 
   const action = actions.find(action => action.aliases.includes(actionWord));
 
-  if (!action) return `Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`;
+  if(!action){
+    return errorMsg(`Invalid command. Supported commands are ${actions.map(action => "'" + action.action + "'").join(", ")}.`);
+  }
  
-  if (parts.length - 1 < action.expectedArguments) return `Invalid command format. ${action.help}`;
+  if(parts.length - 1 < action.expectedArguments){
+    return errorMsg(`Invalid command format. ${action.help}`);
+  }
 
   const result = await action.handler(user, argument);
 
   return result;
-  // return result.msg; - ParseCommand test cases are written for "return result.msg" format
 }
 
 module.exports = { parseCommand };

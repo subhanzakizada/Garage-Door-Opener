@@ -28,8 +28,7 @@ const { test, assert } = require('./common');
         var result = await garageDoorSM.processEvent('open', door);
 
         assert('opening', result.newState, "New status is opening");
-        assert('The door left is opening.', result.msg, "Msg the door is opening");
-        
+        assert('The door left is opening.', result.msg, "Msg the door is opening");     
 
         //Ignored
         door.status = 'opening';

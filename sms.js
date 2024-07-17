@@ -39,7 +39,7 @@ async function smsHandler(req, res, next){
     const body = smsData.Body;         // The SMS message
     
     const user = await users.getUser(from);
-    if (!user) {
+    if(!user){
       return next(`User with phone number ${from} not found.`);
     }
  
@@ -47,11 +47,7 @@ async function smsHandler(req, res, next){
     var response = {};
     try{
         response = await parseCommand(user, body);
-
-        // Check if the state of the door changed
-        if(response.newStatus !== response.previousStatus){
-            await users.updateUser(user.id, { doorStatus: response.newStatus });
-        }
+        users.updateUserDoorStatus(user, response);
         logger.info(`Response: ${JSON.stringify(response)}`);
     } catch(error){
         logger.error(`Error parsing command for user ${user.id}: ${error}`);

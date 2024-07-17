@@ -4,10 +4,13 @@ const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 const logger = require('./logger');
 
+//Name for the default DB
+const db = process.env.DEFAULT_DB;
+
 async function getUser(phone) {
     try {
         await client.connect();
-        const database = client.db("");
+        const database = client.db(db);
         const collection = database.collection('users');
         const user = await collection.findOne({ phone: phone });
         return user;
@@ -22,15 +25,15 @@ async function getUser(phone) {
 async function getDoorByControllerId(controllerId){
     try {
         await client.connect();
-        const database = client.db();
-        const collection = database.collection();
+        const database = client.db(db);
+        const collection = database.collection("users");
 
         const user = await collection.findOne({ "doors.controllerId": controllerId });
         if (!user) {
-            return null;
+          return null;
         }
 
-        const door = user.doors.find(door => door.controllerId === controllerId);
+        const door = user.doors.find((door) => door.controllerId === controllerId);
         return door || null;
     } catch (error) {
         logger.error(`Error retrieving door: ${error}`);
@@ -40,11 +43,31 @@ async function getDoorByControllerId(controllerId){
     }
 }
 
+async function getUserByControllerId(controllerId){
+  try {
+      await client.connect();
+      const database = client.db(db);
+      const collection = database.collection("users");
+
+      const user = await collection.findOne({ "doors.controllerId": controllerId });
+      if (!user) {
+        return null;
+      }
+
+      return user;
+  } catch (error) {
+      logger.error(`Error retrieving user: ${error}`);
+      return null;
+  } finally {
+      await client.close();
+  }
+}
+
 async function updateUser(phone, doorName, status) {
   try {
       const client = new MongoClient(process.env.MONGODB_URI);
       await client.connect();
-      const database = client.db();
+      const database = client.db(db);
       const collection = database.collection('users');
 
       const result = await collection.updateOne(
@@ -67,15 +90,16 @@ async function updateUser(phone, doorName, status) {
   }
 }
 
-async function updateUserDoorStatus(userId, doorName, newStatus) {
+async function updateUserDoorStatus(user, door) {
+    if(door.newState === door.previousState) return user; //No changes, do nothing
     try {
         await client.connect();
-        const database = client.db("");
+        const database = client.db(db);
         const collection = database.collection('users');
 
         const result = await collection.updateOne(
-            { userId: userId, "doors.name": doorName },
-            { $set: { "doors.$.status": newStatus } }
+            { id: user.id, "doors.name": door.name },
+            { $set: { "doors.$.status": door.newState } }
         );
 
         return result;
@@ -87,8 +111,4 @@ async function updateUserDoorStatus(userId, doorName, newStatus) {
     }
 }
 
-module.exports = { getUser, updateUser, getDoorByControllerId, updateUserDoorStatus };
-
-
-  
-  
+module.exports = { getUser, updateUser, getDoorByControllerId, getUserByControllerId, updateUserDoorStatus };

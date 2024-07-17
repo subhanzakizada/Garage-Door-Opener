@@ -5,7 +5,7 @@ const logger = require('./logger');
 module.exports = server;
 
 const users = require('./user');
-const { garageDoorSM } = require('./garageDoorControlSM');
+const { processEvent } = require('./garageDoorControlSM');
 const notifier = require('./notifier');
 
 /*
@@ -26,19 +26,20 @@ server.post('/door', async (req, res, next) => {
 
     //Each door has a unique controller, identified with controllerId
     //The controllerId is part of the door object
-    const door = await users.getDoorByControllerId(req.body.controllerId);
+    const user = await users.getUserByControllerId(req.body.controllerId);
+    if(!user){
+        return res.status(404).send('User not found');
+    }
+
+    const door = user.doors.find((d) => d.controllerId === req.body.controllerId);
+
     if(!door){
         return res.status(404).send('Door not found');
     }
-    try{
-        const previousStatus = door.status; // Store the previous status of the door
-        const result = await garageDoorSM.processEvent(req.body.status, door, notifier);
-        
-        // If the state of the door changed, update the user's door status
-        if(result.status !== previousStatus) {
-            await users.updateUser(door.userPhone, door.name, result.newState);
-        }
 
+    try{
+        const result = await processEvent(req.body.status, door, notifier);
+        await users.updateUserDoorStatus(user, result);
         return res.send("OK");
     } catch(error) {
         return next(error);
