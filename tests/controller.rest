@@ -1,13 +1,15 @@
 ### POST new state from a controller
 
 POST http://localhost:3000/api/door
+Authorization: SOME-API-KEY
 Content-Type: application/json
 
 {
   "controllerId": "CTRL-1",
-  "status": "close_complete"
+  "status": "open_complete"
 }
 
 ### Simulates a controller getting states to work on
 
 GET http://localhost:3000/api/controller/command/CTRL-1
+Authorization: SOME-API-KEY

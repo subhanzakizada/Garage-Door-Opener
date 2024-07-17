@@ -8,12 +8,25 @@ const users = require('./user');
 const { processEvent } = require('./garageDoorControlSM');
 const notifier = require('./notifier');
 
+
+async function userMiddleware(req, res, next){
+    const apiKey = req.headers["authorization"];
+    //console.log(`KEY: ${apiKey}`);
+    const user = await users.getUserByKey(apiKey);
+    if(!user) return res.sendStatus(401);
+    req.user = user;
+    next();
+}
+
+server.use(userMiddleware);
+
 /*
     This endpoint is used by the controller to get the commands to execute: open a door, close it, etc.
-    
+    if status is 'opening' or 'closing' it signals those operations need to start.
+    All other states are ignored.
 */
 server.get('/controller/command/:controllerId', async (req, res, next) => {
-    const door = await users.getDoorByControllerId(req.params.controllerId);
+    const door = req.user.doors.find((d) => d.controllerId === req.params.controllerId);
     if(!door){
         return res.status(404).send('Door not found');
     }
@@ -24,14 +37,7 @@ server.post('/door', async (req, res, next) => {
 
     if(req.body.controllerId === undefined || req.body.status === undefined) return next('No controllerID or status');
 
-    //Each door has a unique controller, identified with controllerId
-    //The controllerId is part of the door object
-    const user = await users.getUserByControllerId(req.body.controllerId);
-    if(!user){
-        return res.status(404).send('User not found');
-    }
-
-    const door = user.doors.find((d) => d.controllerId === req.body.controllerId);
+    const door = req.user.doors.find((d) => d.controllerId === req.body.controllerId);
 
     if(!door){
         return res.status(404).send('Door not found');
@@ -39,7 +45,7 @@ server.post('/door', async (req, res, next) => {
 
     try{
         const result = await processEvent(req.body.status, door, notifier);
-        await users.updateUserDoorStatus(user, result);
+        await users.updateUserDoorStatus(req.user, result);
         return res.send("OK");
     } catch(error) {
         return next(error);

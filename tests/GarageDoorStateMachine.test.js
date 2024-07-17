@@ -11,6 +11,14 @@ const { test, assert } = require('./common');
         }
     });
 
+    test('No event throws exception', async () => {
+        try{
+            await garageDoorSM.processEvent(null, {});
+        } catch(e){
+            assert("Error: No event", e.toString());    
+        }
+    });
+
     test('Door with invalid state throws exception', async () => {
         try{
             await garageDoorSM.processEvent('open', { status: "foo" });

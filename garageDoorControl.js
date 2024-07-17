@@ -1,4 +1,3 @@
-//const { error } = require('winston');
 const { processEvent } = require('./garageDoorControlSM');
 
 function findDoor(user, argument){

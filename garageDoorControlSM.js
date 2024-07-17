@@ -9,12 +9,13 @@ async function closeDoor(event) {
 }
 
 async function ignoreEvent(event){
+    logger.info(`SM: ignoring event: ${event.name}. Door in state: ${event.door.status}`);
     return `The door "${event.door.name}" is currently ${event.door.status}.`;
 }
 
 // Generic notification function
 async function notify(event, statusMessage) {
-    if (event.notifier) {
+    if(event.notifier){
         await event.notifier.notify(event.door, statusMessage);
     }
     return statusMessage;
@@ -81,6 +82,7 @@ const stateMachine = {
 */  
 
 async function processEvent(eventName, door, notifier) {
+    
     const event = {
         name: eventName,        //Open/Close/State/Complete
         door: door,             //The door object
@@ -88,7 +90,11 @@ async function processEvent(eventName, door, notifier) {
     };
 
     if(!door){
-        throw new Error("No door");
+      throw new Error("No door");
+    }
+
+    if(!eventName){
+      throw new Error("No event");
     }
 
     const currentState = stateMachine[event.door.status];
