@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { getUserByControllerId, updateUserDoorStatus } = require('./user');
+const { getUserByControllerId } = require('./user');
 const twilio = require('twilio');
 const logger = require('./logger');
 
@@ -18,7 +18,7 @@ exports.notify = async (door, msg) => {
             throw new Error(`User not found for controller ID: ${door.controllerId}`);
         }
 
-        //We use this to tets locally and not seind anything
+        //We use this to tests locally and not seind anything
         if(process.env.SIMULATE_NOTIFY !== "1"){
             // Send SMS to the user's phone using Twilio API
             const message = await client.messages.create({

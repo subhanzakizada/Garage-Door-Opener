@@ -63,25 +63,25 @@ async function getUserByKey(key){
   } 
 }
 
-// async function getUserByControllerId(controllerId){
-//   try {
-//       await client.connect();
-//       const database = client.db(db);
-//       const collection = database.collection("users");
+async function getUserByControllerId(controllerId){
+  try {
+      await client.connect();
+      const database = client.db(db);
+      const collection = database.collection("users");
 
-//       const user = await collection.findOne({ "doors.controllerId": controllerId });
-//       if (!user) {
-//         return null;
-//       }
+      const user = await collection.findOne({ "doors.controllerId": controllerId });
+      if (!user) {
+        return null;
+      }
 
-//       return user;
-//   } catch (error) {
-//       logger.error(`Error retrieving user: ${error}`);
-//       return null;
-//   } finally {
-//       await client.close();
-//   }
-// }
+      return user;
+  } catch (error) {
+      logger.error(`Error retrieving user: ${error}`);
+      return null;
+  } finally {
+      await client.close();
+  }
+}
 
 // async function updateUser(phone, doorName, status) {
 //   try {
@@ -131,4 +131,4 @@ async function updateUserDoorStatus(user, door) {
     }
 }
 
-module.exports = { getUserByPhone, getUserByKey, updateUserDoorStatus /*updateUser, getDoorByControllerId, getUserByControllerId, */ };
+module.exports = { getUserByPhone, getUserByKey, updateUserDoorStatus, getUserByControllerId /*updateUser, getDoorByControllerId, getUserByControllerId, */ };
