@@ -12,17 +12,56 @@ const uri = process.env.MONGODB_URI;
 // ];
 
 const users = [
-{
-    "phone": "+12532937820",
-    "apiKey": "sz",
-    "doors": [
-      {
-        "name": "left",
-        "status": "closed",
-        "controllerId": "CTRL-1"
-      }
-    ]
-  }
+    {
+        "phone": "+12532937820",
+        "apiKey": "sz",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }, 
+            {
+                "name": "main",
+                "status": "closed",
+                "controllerId": "CTRL-2"
+            }, 
+            {
+                "name": "right",
+                "status": "closed",
+                "controllerId": "CTRL-3"
+            }
+        ]
+    },
+
+    {
+        "phone": "1234567",
+        "apiKey": "jj",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }, 
+            {
+                "name": "right",
+                "status": "closed",
+                "controllerId": "CTRL-2"
+            }
+        ]
+    },
+
+    {
+        "phone": "7654321",
+        "apiKey": "kk",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }
+        ]
+    }
 ]
 
 async function seedDatabase() {
