@@ -1,4 +1,5 @@
 const { processEvent } = require('./garageDoorControlSM');
+const users = require('./user');
 
 function findDoor(user, argument){
   // Find the door by name or number
@@ -82,6 +83,14 @@ function errorMsg(msg){
   return { msg: msg };
 }
 
+async function processCommand(user, command){
+  const result = await parseCommand(user, command);
+  if(result.newState && result.previousState){
+    await users.updateUserDoorStatus(user, result);
+  } 
+  return result;
+}
+
 // Function to parse and validate commands
 async function parseCommand(user, command) {
   
@@ -115,4 +124,4 @@ async function parseCommand(user, command) {
   return result;
 }
 
-module.exports = { parseCommand };
+module.exports = { parseCommand, processCommand };

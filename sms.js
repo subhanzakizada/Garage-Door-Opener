@@ -5,7 +5,7 @@ const MessagingResponse = twilio.twiml.MessagingResponse;
 
 module.exports = server;
 
-const { parseCommand } = require('./garageDoorControl'); 
+const { processCommand } = require('./garageDoorControl'); 
 const users = require('./user');
 const logger = require('./logger');
 
@@ -48,10 +48,9 @@ async function smsHandler(req, res, next){
     }
  
     // Parse the SMS message and get the response
-    var response = {};
+    var response;
     try{
-        response = await parseCommand(user, body);
-        users.updateUserDoorStatus(user, response);
+        response = await processCommand(user, body);
         logger.info(`Response: ${JSON.stringify(response)}`);
     }catch(error){
         logger.error(`Error parsing command for user ${user.id}: ${error}`);
