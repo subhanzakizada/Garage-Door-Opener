@@ -5,11 +5,64 @@ const logger = require('./logger');
 
 const uri = process.env.MONGODB_URI;
 
+// const users = [
+//     { phone: "1234567", doors: [{ name: "left", status: "open", controllerId: "1" }, { name: "right", status: "closed", controllerId: "2" }] },
+//     { phone: "7654321", doors: [{ name: "main", status: "closed", controllerId: "1" }] },
+//     { phone: "+12532937820", doors: [{ name: "main", status: "closed", controllerId: "1" }, { name: "left", status: "open", controllerId: "2" }, { name: "right", status: "closed", controllerId: "3" }] }
+// ];
+
 const users = [
-    { phone: "1234567", doors: [{ name: "left", status: "open", controllerId: "1" }, { name: "right", status: "closed", controllerId: "2" }] },
-    { phone: "7654321", doors: [{ name: "main", status: "closed", controllerId: "1" }] },
-    { phone: "+12532937820", doors: [{ name: "main", status: "closed", controllerId: "1" }, { name: "left", status: "open", controllerId: "2" }, { name: "right", status: "closed", controllerId: "3" }] }
-];
+    {
+        "phone": "+12532937820",
+        "apiKey": "sz",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }, 
+            {
+                "name": "main",
+                "status": "closed",
+                "controllerId": "CTRL-2"
+            }, 
+            {
+                "name": "right",
+                "status": "closed",
+                "controllerId": "CTRL-3"
+            }
+        ]
+    },
+
+    {
+        "phone": "1234567",
+        "apiKey": "jj",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }, 
+            {
+                "name": "right",
+                "status": "closed",
+                "controllerId": "CTRL-2"
+            }
+        ]
+    },
+
+    {
+        "phone": "7654321",
+        "apiKey": "kk",
+        "doors": [
+            {
+                "name": "left",
+                "status": "open",
+                "controllerId": "CTRL-1"
+            }
+        ]
+    }
+]
 
 async function seedDatabase() {
     const client = new MongoClient(uri);
@@ -85,3 +138,7 @@ async function checkDb() {
         logger.info('MongoDB connection closed');
     }
 }
+
+( async() => {
+    seedDatabase();
+}) ();
