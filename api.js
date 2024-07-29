@@ -33,6 +33,31 @@ server.get('/controller/command/:controllerId', async (req, res, next) => {
     res.json({ status: door.status });
 });
 
+server.put('/door', async (req, res, next) => {
+    if(req.body.controllerId === undefined || req.body.status === undefined) return next('No controllerID or status');
+
+    const door = req.user.doors.find((d) => d.controllerId === req.body.controllerId);
+    if(!door){
+        return res.status(404).send('Door not found');
+    }
+
+    logger.info(`Updated state for door ${door.name}: ${req.body.status}`);
+
+    //if state == close || open = set the door to that state - al others ignore
+    const state = req.body.status;
+
+    if(state === 'open' || state === 'close'){
+        try{
+            const result = { newState: state, previousState: door.status, msg: `Set door ${door.name} to ${state}` };
+            await users.updateUserDoorStatus(req.user, result);
+            return res.json("OK");
+        } catch(error) {
+            return next(error);
+        }
+    }
+    return res.send("OK");
+});
+
 server.post('/door', async (req, res, next) => {
 
     if(req.body.controllerId === undefined || req.body.status === undefined) return next('No controllerID or status');
