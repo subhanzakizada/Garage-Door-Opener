@@ -1,4 +1,4 @@
-const { processEvent } = require('./garageDoorControlSM');
+const { processEvent } = require('./garageDoorControlSM2');
 const users = require('./user');
 
 function findDoor(user, argument){
