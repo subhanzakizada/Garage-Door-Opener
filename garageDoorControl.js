@@ -15,12 +15,17 @@ function findDoor(user, argument){
 // Action handlers
 const open = async (user, argument) => {
   const door = findDoor(user, argument);
-  return await processEvent('open', door);
+  return await processEvent('sms_open', door);
 };
 
 const close = async (user, argument) => {
   const door = findDoor(user, argument);
-  return await processEvent('close', door);
+  return await processEvent('sms_close', door);
+};
+
+const cancel = async (user, argument) => {
+  const door = findDoor(user, argument);
+  return await processEvent('sms_cancel', door);
 };
 
 const status = async (user, argument) => {
