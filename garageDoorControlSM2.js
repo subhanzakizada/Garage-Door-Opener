@@ -75,14 +75,14 @@ const stateMachine = {
     closed: [
         'sms_open',     'opening_request', openDoor,
         'ctrl_open',    'open',            noOp,
-        'ctrl_opening', 'opening',         noOp,
+        'ctrl_moving',  'opening',         noOp,
         'ctrl_invalid', 'closed',          logInvalid,
         'any',          'closed',          ignoreEvent
     ],
     opening_request: [
         'sms_cancel',   'closed',          notifyCancel,
         'ctrl_invalid', 'closed',          logInvalid,
-        'ctrl_opening', 'opening',         notifyOpening,
+        'ctrl_moving ', 'opening',         notifyOpening,
         'any',          'opening_request', ignoreEvent
 
     ],
@@ -100,7 +100,7 @@ const stateMachine = {
     ],
     closing_request: [
         'sms_cancel',   'open',            notifyCancel,
-        'ctrl_closing', 'closing',         notifyClosing,
+        'ctrl_moving ', 'closing',         notifyClosing,
         'ctrl_invalid', 'closed',          logInvalid,
         'any',          'closing_request', ignoreEvent
     ],
