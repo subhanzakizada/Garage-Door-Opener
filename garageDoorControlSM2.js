@@ -57,6 +57,7 @@ async function logInvalid(event){
 }
 
 async function noOp(event){
+    logger.info(`NoOp: door in state: ${event.door.status}. Eventname: ${event.name}`);
     return "";
 }
 
@@ -75,6 +76,7 @@ const stateMachine = {
     closed: [
         'sms_open',     'opening_request', openDoor,
         'ctrl_open',    'open',            noOp,
+        'ctrl_moving',  'opening',         noOp,    //We assume 'moving' is opening
         'ctrl_opening', 'opening',         noOp,
         'ctrl_invalid', 'closed',          logInvalid,
         'any',          'closed',          ignoreEvent
@@ -82,6 +84,7 @@ const stateMachine = {
     opening_request: [
         'sms_cancel',   'closed',          notifyCancel,
         'ctrl_invalid', 'closed',          logInvalid,
+        'ctrl_moving',  'opening',         notifyOpening,    //We assume 'moving' is opening
         'ctrl_opening', 'opening',         notifyOpening,
         'any',          'opening_request', ignoreEvent
 
@@ -94,12 +97,14 @@ const stateMachine = {
     ],
     open: [
         'sms_close',   'closing_request', closeDoor,
+        'ctrl_moving', 'closing',         noOp,     //We assume 'moving' is closing
         'ctrl_closed', 'closed',          noOp,
         'ctrl_invalid','closed',          logInvalid,
         'any',         'open',            ignoreEvent
     ],
     closing_request: [
         'sms_cancel',   'open',            notifyCancel,
+        'ctrl_moving',  'closing',         noOp,        //We assume 'moving' is closing
         'ctrl_closing', 'closing',         notifyClosing,
         'ctrl_invalid', 'closed',          logInvalid,
         'any',          'closing_request', ignoreEvent
@@ -116,7 +121,7 @@ function validateStateMachine(){
 
     const validEvents = ['sms_open', 'sms_close', 'sms_cancel',
                          'ctrl_open', 'ctrl_opening', 'ctrl_closed', 'ctrl_closing',
-                         'ctrl_invalid', 
+                         'ctrl_invalid', 'ctrl_moving',
                          'any'];
 
     //Check that all states have valid states
