@@ -1,15 +1,33 @@
-### POST new state from a controller
+### GET Door status 
 
-POST http://localhost:3000/api/door
-Authorization: sz
+GET http://localhost:3000/api/door/USER-CTRL-1
+Authorization: API-KEY-123456
+
+
+### PUT new state from a controller
+PUT http://localhost:3000/api/door/USER-CTRL-1
+Authorization: API-KEY-123456
 Content-Type: application/json
 
 {
-  "controllerId": "CTRL-1",
-  "status": "close_complete"
+  "status": "ctrl_closed"
 }
 
-### Simulates a controller getting states to work on
+### PUT new state from a controller
+PUT http://localhost:3000/api/door/USER-CTRL-1
+Authorization: API-KEY-123456
+Content-Type: application/json
 
-GET http://localhost:3000/api/controller/command/CTRL-1
-Authorization: sz
+{
+  "status": "ctrl_open"
+}
+
+
+### PUT new state from a controller
+PUT http://localhost:3000/api/door/USER-CTRL-1
+Authorization: API-KEY-123456
+Content-Type: application/json
+
+{
+  "status": "ctrl_moving"
+}
