@@ -36,7 +36,6 @@ const { log } = console;
             assert('Request to open door left received.', result.msg, "Open left command");
             assert('opening_request', result.newState, "Status after opening left");
 
-
             //Simualtes API call
             user = await users.getUserByKey('API-KEY-123456');
             //log(user);
@@ -44,15 +43,23 @@ const { log } = console;
             var door = user.doors.find(d => d.name === 'left');
             assert('opening_request', door.status, "Status after opening left");
 
-            result = await processEvent('open_complete', door);
+            result = await processEvent('ctrl_moving', door);
             //log(result);
-            
             result = await users.updateUserDoorStatus(user, result);
             //log(result);
             
             user = await users.getUserByPhone('123456789');
             door = user.doors.find(d => d.name === 'left');
-            assert('opening_request', door.status, "Status after opening left");
+            assert('opening', door.status, "Status after opening request is acknowledged");
+
+            result = await processEvent('ctrl_open', door);
+            //log(result);
+            result = await users.updateUserDoorStatus(user, result);
+            
+
+            user = await users.getUserByPhone('123456789');
+            door = user.doors.find(d => d.name === 'left');
+            assert('open', door.status, "Status after opening left");
         });
     } catch (error) {
         log(error);
