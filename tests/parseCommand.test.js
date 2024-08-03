@@ -18,13 +18,13 @@ const { log } = console;
         test('Test command: status left', async () => {
             const result = await parseCommand(mockUser, 'status left');
             //log(result);
-            assert('Status of left: closed', result.msg, "Status left command");
+            assert('Status of door "left" is closed', result.msg, "Status left command");
         });
 
         test('Test command: s left', async () => {
             const result = await parseCommand(mockUser, 's left');
             //log(result);
-            assert('Status of left: closed', result.msg, "Status left command");
+            assert('Status of door "left" is closed', result.msg, "Status left command");
         });
 
         test('Test command: close left', async () => {
@@ -32,17 +32,17 @@ const { log } = console;
             assert('The door "left" is currently closed.', result.msg, "Close left command");
 
             const status = await parseCommand(mockUser, 'status left');
-            assert('Status of left: closed', status.msg, "Status after closing left");
+            assert('Status of door "left" is closed', status.msg, "Status after closing left");
         });
 
         test('Test command: open left', async () => {
             const result = await parseCommand(mockUser, 'open left');
-            assert('The door left is opening.', result.msg, "Open left command");
-            assert('opening', result.newState, "Status after opening left");
+            assert('Request to open door left received.', result.msg, "Open left command");
+            assert('opening_request', result.newState, "Status after opening left");
             mockUser.doors[0].status = result.newState;
             
             const status = await parseCommand(mockUser, 'status left');
-            assert('Status of left: opening', status.msg, "Status after opening left");
+            assert('Status of door "left" is opening_request', status.msg, "Status after opening left");
         });
          
         // Close an "opening" door
@@ -52,7 +52,7 @@ const { log } = console;
             assert('The door "right" is currently opening.', result.msg, "Close right command");
             
             const status = await parseCommand(mockUser, 'status right');
-            assert('Status of right: opening', status.msg, "Status after opening right");
+            assert('Status of door "right" is opening', status.msg, "Status after opening right");
         });
 
         test('Test invalid command', async () => {

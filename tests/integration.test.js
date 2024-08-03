@@ -4,7 +4,7 @@
 */
 
 const { processCommand } = require('../garageDoorControl');
-const { processEvent } = require('../garageDoorControlSM');
+const { processEvent } = require('../garageDoorControlSM2');
 const { test, assert } = require('./common');
 const users = require('../user');
 
@@ -33,8 +33,8 @@ const { log } = console;
             var result = await processCommand(user, 'open left');
             //log(result);
 
-            assert('The door left is opening.', result.msg, "Open left command");
-            assert('opening', result.newState, "Status after opening left");
+            assert('Request to open door left received.', result.msg, "Open left command");
+            assert('opening_request', result.newState, "Status after opening left");
 
 
             //Simualtes API call
@@ -42,7 +42,7 @@ const { log } = console;
             //log(user);
             
             var door = user.doors.find(d => d.name === 'left');
-            assert('opening', door.status, "Status after opening left");
+            assert('opening_request', door.status, "Status after opening left");
 
             result = await processEvent('open_complete', door);
             //log(result);
@@ -52,7 +52,7 @@ const { log } = console;
             
             user = await users.getUserByPhone('123456789');
             door = user.doors.find(d => d.name === 'left');
-            assert('open', door.status, "Status after opening left");
+            assert('opening_request', door.status, "Status after opening left");
         });
     } catch (error) {
         log(error);

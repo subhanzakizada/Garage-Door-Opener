@@ -21,7 +21,7 @@ async function notify(event, statusMessage) {
     return statusMessage;
 }
 
-// Simplified notifyClose function
+// Simplified notifyClosed function
 async function notifyClosed(event) {
     const msg = `The door ${event.door.name} is now closed.`;
     return await notify(event, msg);
@@ -33,19 +33,19 @@ async function notifyOpen(event) {
     return await notify(event, msg);
 }
 
-// Simplified notifyOpen function
+// Simplified notifyOpening function
 async function notifyOpening(event) {
     const msg = `The door ${event.door.name} is now opening.`;
     return await notify(event, msg);
 }
 
-// Simplified notifyOpen function
+// Simplified notifyClosing function
 async function notifyClosing(event) {
     const msg = `The door ${event.door.name} is now closing.`;
     return await notify(event, msg);
 }
 
-// Simplified notifyOpen function
+// Simplified notifyCancel function
 async function notifyCancel(event) {
     const msg = `The door ${event.door.name} operation is cancelled.`;
     return await notify(event, msg);
@@ -56,6 +56,7 @@ async function logInvalid(event){
     return `Controller reports door "${event.door.name}" in invalid state.`;
 }
 
+// "Do nothing" function
 async function noOp(event){
     logger.info(`NoOp: door in state: ${event.door.status}. Eventname: ${event.name}`);
     return "";
@@ -76,7 +77,7 @@ const stateMachine = {
     closed: [
         'sms_open',     'opening_request', openDoor,
         'ctrl_open',    'open',            noOp,
-        'ctrl_moving',  'opening',         noOp,    //We assume 'moving' is opening
+        'ctrl_moving',  'opening',         noOp,        //We assume 'moving' is 'opening' in this state
         'ctrl_opening', 'opening',         noOp,
         'ctrl_invalid', 'closed',          logInvalid,
         'any',          'closed',          ignoreEvent
