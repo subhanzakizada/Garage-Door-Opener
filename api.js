@@ -38,7 +38,10 @@ server.put('/door/:controllerId', async (req, res, next) => {
     try{
         const result = await processEvent(req.body.status, door, notifier);
         await users.updateUserDoorStatus(req.user, result);
-        return res.send("OK");
+        return res.send({
+            status: result.newState,
+            msg: result.msg
+        });
     } catch(error) {
         return next(error);
     }
