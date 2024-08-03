@@ -39,7 +39,7 @@ const status = async (user, argument) => {
   const door = findDoor(user, argument);
   
   return {
-    msg: `Status of ${door.name}: ${door.status}`
+    msg: `Status of door "${door.name}" is ${door.status}`
   }
 };
 
