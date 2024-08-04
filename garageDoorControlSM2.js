@@ -195,6 +195,7 @@ async function processEvent(eventName, door, notifier) {
                 };
                 result.newState = currentState[(x*3)+1];
                 result.msg = await currentState[(x*3)+2](event);
+                logger.info(`"${door.name}" transitioned from *${result.previousState}* --> *${result.newState}*`);
                 return result;
             } catch(error){
                 // Log the Error

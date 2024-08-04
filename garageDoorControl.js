@@ -91,7 +91,10 @@ function errorMsg(msg){
 async function processCommand(user, command){
   const result = await parseCommand(user, command);
   if(result.newState && result.previousState){
-    await users.updateUserDoorStatus(user, result);
+    const r = await users.updateUserDoorStatus(user, result);
+    if(r === null){
+      return errorMsg("Error updating user status");
+    }
   } 
   return result;
 }
