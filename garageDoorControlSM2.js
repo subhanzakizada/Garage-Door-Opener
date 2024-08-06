@@ -72,6 +72,7 @@ async function noOp(event){
         - the action to be executed as part of this transition
     
     Any given state can have many matching events, so the array will always have muliples of 3 elements total.
+    The "any" event is a wildcard that matches any event.
 */
 const stateMachine = {
     closed: [
@@ -79,12 +80,12 @@ const stateMachine = {
         'ctrl_open',    'open',            noOp,
         'ctrl_moving',  'opening',         noOp,        //We assume 'moving' is 'opening' in this state
         'ctrl_opening', 'opening',         noOp,
-        'ctrl_invalid', 'closed',          logInvalid,
+        'ctrl_invalid', 'invalid',         logInvalid,
         'any',          'closed',          ignoreEvent
     ],
     opening_request: [
         'sms_cancel',   'closed',          notifyCancel,
-        'ctrl_invalid', 'closed',          logInvalid,
+        'ctrl_invalid', 'invalid',         logInvalid,
         'ctrl_moving',  'opening',         notifyOpening,    //We assume 'moving' is opening
         'ctrl_opening', 'opening',         notifyOpening,
         'any',          'opening_request', ignoreEvent
@@ -93,28 +94,33 @@ const stateMachine = {
     opening: [
         'ctrl_open',    'open',    notifyOpen,
         'ctrl_closed',  'closed',  notifyClosed,
-        'ctrl_invalid', 'closed',  logInvalid,
+        'ctrl_invalid', 'invalid', logInvalid,
         'any',          'opening', ignoreEvent
     ],
     open: [
         'sms_close',   'closing_request', closeDoor,
         'ctrl_moving', 'closing',         noOp,     //We assume 'moving' is closing
         'ctrl_closed', 'closed',          noOp,
-        'ctrl_invalid','closed',          logInvalid,
+        'ctrl_invalid','invalid',         logInvalid,
         'any',         'open',            ignoreEvent
     ],
     closing_request: [
         'sms_cancel',   'open',            notifyCancel,
         'ctrl_moving',  'closing',         noOp,        //We assume 'moving' is closing
         'ctrl_closing', 'closing',         notifyClosing,
-        'ctrl_invalid', 'closed',          logInvalid,
+        'ctrl_invalid', 'invalid',         logInvalid,
         'any',          'closing_request', ignoreEvent
     ],
     closing: [
         'ctrl_closed', 'closed',  notifyClosed,
         'ctrl_open',   'open',    notifyOpen,
-        'ctrl_invalid','closed',  logInvalid,
+        'ctrl_invalid','invalid', logInvalid,
         'any',         'opening', ignoreEvent
+    ],
+    invalid: [  //Invalid state means the controller is in an unknown state and the sensors might not be working
+        'ctrl_open',    'open',    noOp,
+        'ctrl_closed',  'closed',  noOp,
+        'any',          'invalid', noOp
     ]
 };
 

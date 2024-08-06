@@ -90,16 +90,19 @@ async function getUserByControllerId(controllerId){
 }
 
 async function updateUserDoorStatus(user, door) {
-  if(door.newState === door.previousState) return user; //No changes, do nothing
+  if(door.newState === door.previousState){
+    logger.info(`Door status for ${door.name}, in user ${user.phone} has not changed`);
+    return user; //No changes, do nothing
+  }
   const client = await connect();
   try {
     const database = client.db(db);
     const collection = database.collection('users');
-
     const result = await collection.updateOne(
         { _id: user._id, "doors.name": door.name },
         { $set: { "doors.$.status": door.newState } }
     );
+    console.log(result);
     return result;
   } catch (error) {
       console.error('Error updating user door status:', error);
