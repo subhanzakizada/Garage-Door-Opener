@@ -6,7 +6,15 @@ const { test, assert } = require('./common');
 
 (async () => {
     test('SM is valid', async () => {
-        garageDoorSM.validateStateMachine();
+        const ret = garageDoorSM.validateStateMachine();
+        assert(ret, true, "SM is valid");
+    });
+})();
+
+//Print markdown for FSM
+(async () => {
+    test('Prints FSM in markdown', async () => {
+        garageDoorSM.printMarkdown();
         assert(true, true, "SM is valid");
     });
 })();

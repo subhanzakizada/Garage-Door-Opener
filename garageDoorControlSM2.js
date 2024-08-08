@@ -150,7 +150,24 @@ function validateStateMachine(){
             }
         }
     }
+    return true;
+};
+
+function printMarkdown(){
+    //Check that all states have valid states
+    console.log("Configuration of SM");
+    for(const state in stateMachine){
+        console.log(`### ${state}`);
+        for(x=0; x<stateMachine[state].length/3; x++){
+            const eventName = stateMachine[state][x*3];
+            const next = stateMachine[state][x*3+1];
+            const action = stateMachine[state][x*3+2].name;
+            console.log(`${eventName} -> ${next}: - ${action};`);
+        }
+        console.log(`\n`);
+    }
 }
+
 
 /*
     The event object has the following structure:
@@ -215,4 +232,4 @@ async function processEvent(eventName, door, notifier) {
     return null;
 }
 
-module.exports = { processEvent, validateStateMachine };
+module.exports = { processEvent, validateStateMachine, printMarkdown };
