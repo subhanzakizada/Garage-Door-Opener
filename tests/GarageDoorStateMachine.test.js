@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const garageDoorSM_old = require('../garageDoorControlSM');
 const garageDoorSM = require('../garageDoorControlSM2');
 const { test, assert } = require('./common');
 
@@ -165,6 +164,20 @@ const { test, assert } = require('./common');
         };
 
         var result = await garageDoorSM.processEvent('ctrl_closed', door);
+        assert('closed', result.newState, "Door is closed");
+    });
+
+    test('Controller reports invalid state, then recovers with a close event', async () => {
+        var door = { 
+            name: "left", 
+            status: "open" 
+        };
+
+        var result = await garageDoorSM.processEvent('ctrl_invalid', door);
+        assert('invalid', result.newState, "Door is invalid");
+        door.newState = result.newState;
+
+        result = await garageDoorSM.processEvent('ctrl_closed', door);
         assert('closed', result.newState, "Door is closed");
     });
 })();
