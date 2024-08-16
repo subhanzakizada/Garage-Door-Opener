@@ -18,7 +18,7 @@ exports.notify = async (door, msg) => {
             throw new Error(`User not found for controller ID: ${door.controllerId}`);
         }
 
-        //We use this to tests locally and not seind anything
+        //We use this to tests locally and not send anything
         if(process.env.SIMULATE_NOTIFY !== "1"){
             // Send SMS to the user's phone using Twilio API
             const message = await client.messages.create({
@@ -39,4 +39,3 @@ exports.notify = async (door, msg) => {
         throw error;
     }
 };
-

@@ -115,7 +115,7 @@ const stateMachine = {
         'ctrl_closed', 'closed',  notifyClosed,
         'ctrl_open',   'open',    notifyOpen,
         'ctrl_invalid','invalid', logInvalid,
-        'any',         'opening', ignoreEvent
+        'any',         'closing', ignoreEvent
     ],
     invalid: [  //Invalid state means the controller is in an unknown state and the sensors might not be working
         'ctrl_open',    'open',    noOp,
@@ -137,7 +137,7 @@ function validateStateMachine(){
             throw new Error(`State ${state} has an invalid number of elements`);
         }
 
-        for(x=0; x<stateMachine[state].length/3; x++){
+        for(var x=0; x<stateMachine[state].length/3; x++){
             const eventName = stateMachine[state][x*3];
 
             if(!validEvents.includes(eventName)){
@@ -155,17 +155,25 @@ function validateStateMachine(){
 
 function printMarkdown(){
     //Check that all states have valid states
-    console.log("Configuration of SM");
+    // console.log(`digraph finite_state_machine {\n\tfontname="Helvetica,Arial,sans-serif"\n`);
+    // console.log(`\tnode [fontname="Helvetica,Arial,sans-serif"]\n`);
+	// console.log(`\tedge [fontname="Helvetica,Arial,sans-serif"]\n`);
+    console.log(`digraph finite_state_machine {\n\tfontname="Courier"\n`);
+    console.log(`\tnode [fontname="Courier"]\n`);
+	console.log(`\tedge [fontname="Courier"]\n`);
+
     for(const state in stateMachine){
-        console.log(`### ${state}`);
-        for(x=0; x<stateMachine[state].length/3; x++){
+        //console.log(`### ${state}`);
+        for(var x=0; x<stateMachine[state].length/3; x++){
             const eventName = stateMachine[state][x*3];
             const next = stateMachine[state][x*3+1];
             const action = stateMachine[state][x*3+2].name;
-            console.log(`${eventName} -> ${next}: - ${action};`);
+            //from -> next [label = "eventName/action"];
+            console.log(`\t${state} -> ${next} [label = "${eventName}/${action}"];`);
+            //console.log(`${eventName} -> ${next}: - ${action};`);
         }
-        console.log(`\n`);
     }
+    console.log("}");
 }
 
 
@@ -208,7 +216,7 @@ async function processEvent(eventName, door, notifier) {
         throw new Error("Invalid state");   //This should never happen
     }
 
-    for(x=0; x<currentState.length/3; x++){
+    for(var x=0; x<currentState.length/3; x++){
         if(eventName===currentState[x*3] || currentState[x*3] === 'any'){
             //Found a matching event for the state OR "any"
             try {
